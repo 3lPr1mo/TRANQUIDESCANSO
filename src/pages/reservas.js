@@ -1,40 +1,36 @@
+import { Title } from "@/components/ReservasUI/Title";
+import { Input } from "@/components/ReservasUI/Input";
 import Sidebar from "@/components/Sidebar";
 import Head from "next/head";
+import { FilterButton } from "@/components/ReservasUI/FilterButton";
+import { AddButton } from "@/components/ReservasUI/AddButton";
+import { ReservaList } from "@/components/ReservasUI/ReservaList";
+import ReservasUI from "@/components/ReservasUI/ReservasUI";
 
 export default function reservas() {
   return (
     <>
       <Head>
-        <title>TRANQUI HOME</title>
+        <title></title>
       </Head>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2">
         <div>
           <Sidebar />
         </div>
-        <div className="flex h-screen place-items-center">
+        <div>
+          <Title />
+        </div>
+        <div className="flex  place-items-center mt-10">
+          <Input />
           <div>
-            <div className="flex h-screen place-items-center">
-              <div>
-                <div className="m-5 place-items-center flex">
-                    
-                </div>
-                <div className="m-5 place-items-center">
-                  <div>
-                    <h2 className="font-bold text-xl mb-2">JOSEJU SEJU</h2>
-                    <p className="text-gray-700 text-base">ID: 12312321321</p>
-                    <p className="text-gray-700 text-base">
-                      Department: Engineering
-                    </p>
-                    <p className="text-gray-700 text-base">
-                      Fecha de Nacimiento: 2004-03-18
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <FilterButton />
+            <AddButton />
           </div>
         </div>
       </div>
+      <ReservaList>
+        <ReservasUI />
+      </ReservaList>
     </>
   );
 }
