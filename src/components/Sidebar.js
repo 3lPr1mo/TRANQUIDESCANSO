@@ -14,6 +14,7 @@ import {
 import { CgProfile } from "react-icons/cg";
 import { FaRegComments } from "react-icons/fa";
 import { BiMessageSquareDots } from "react-icons/bi";
+import Link from "next/link";
 
 function Sidebar() {
   return (
@@ -31,38 +32,38 @@ function Sidebar() {
               TRANQUIDESCANSO S.A.
             </h1>
             <div className="my-4 border-b w-full border-gray-100 pb-4">
-              <div className="flex mb-2 justify-start items-center gap-4 px-5 hover:bg-gray-900 p-2 rounded-md group cursor-pointer hover:shadow-lg m-auto">
+              <Link className="flex mb-2 justify-start items-center gap-4 px-5 hover:bg-gray-900 p-2 rounded-md group cursor-pointer hover:shadow-lg m-auto" type="button" href="/home">
                 <CgProfile className="text-2xl text-gray-600 group-hover:text-white" />
                 <h3 className="text-base text-gray-800 group-hover:text-white font-semibold">
                   Profile
                 </h3>
-              </div>
-              <div className="flex mb-2 justify-start items-center gap-4 px-5 hover:bg-gray-900 p-2 rounded-md group cursor-pointer hover:shadow-lg m-auto">
+              </Link>
+              <Link className="flex mb-2 justify-start items-center gap-4 px-5 hover:bg-gray-900 p-2 rounded-md group cursor-pointer hover:shadow-lg m-auto" type="button" href="/reservas">
                 <MdOutlineSpaceDashboard className="text-2xl text-gray-600 group-hover:text-white" />
                 <h3 className="text-base text-gray-800 group-hover:text-white font-semibold">
                   Reservas
                 </h3>
-              </div>
-              <div className="flex mb-2 justify-start items-center gap-4 px-5 hover:bg-gray-900 p-2 rounded-md group cursor-pointer hover:shadow-lg m-auto">
+              </Link>
+              <Link className="flex mb-2 justify-start items-center gap-4 px-5 hover:bg-gray-900 p-2 rounded-md group cursor-pointer hover:shadow-lg m-auto" type="button" href="/home">
                 <MdOutlineAnalytics className="text-2xl text-gray-600 group-hover:text-white" />
                 <h3 className="text-base text-gray-800 group-hover:text-white font-semibold">
                   Hoteles
                 </h3>
-              </div>
-              <div className="flex mb-2 justify-start items-center gap-4 px-5 hover:bg-gray-900 p-2 rounded-md group cursor-pointer hover:shadow-lg m-auto">
+              </Link>
+              <Link className="flex mb-2 justify-start items-center gap-4 px-5 hover:bg-gray-900 p-2 rounded-md group cursor-pointer hover:shadow-lg m-auto" type="button" href="/home">
                 <MdOutlineIntegrationInstructions className="text-2xl text-gray-600 group-hover:text-white" />
                 <h3 className="text-base text-gray-800 group-hover:text-white font-semibold">
                   Agencias
                 </h3>
-              </div>
+              </Link>
             </div>
             <div className="my-4 w-full border-b border-gray-200 pb-4">
-              <div className="flex mb-2 justify-start items-center gap-4 px-5 border-gray-300 hover:bg-gray-900 p-2 rounded-md group cursor-pointer hover:shadow-lg m-auto">
+              <Link className="flex mb-2 justify-start items-center gap-4 px-5 border-gray-300 hover:bg-gray-900 p-2 rounded-md group cursor-pointer hover:shadow-lg m-auto" type="button" href="/home">
                 <MdOutlineLogout className="text-2xl text-gray-600 group-hover:text-white" />
                 <h3 className="text-base text-gray-800 group-hover:text-white font-semibold">
                   Logout
                 </h3>
-              </div>
+              </Link>
             </div>
           </div>
         </div>
