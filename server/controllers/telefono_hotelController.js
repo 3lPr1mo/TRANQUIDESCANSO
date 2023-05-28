@@ -12,7 +12,7 @@ export const getAllTelHotel = async (req,res) =>{
 export const getTelHotel = async (req,res)=>{
     try {
         const ciudadIn = await telefono_hotelModel.findAll({
-            where:{id:req.params.id}
+            where:{id_hotel:req.params.id}
         })
         res.json(ciudadIn)
     } catch (error) {
@@ -32,7 +32,7 @@ export const createTelHotel = async(req,res)=>{
 export const updateTelHotel = async(req,res)=>{
     try {
         await telefono_hotelModel.update(req.body,{
-            where:{id:req.params.id}
+            where:{id_hotel:req.params.id}
         })
         res.json({"message":"¡Registro creado correctamente!"})
     } catch (error) {
@@ -43,7 +43,7 @@ export const updateTelHotel = async(req,res)=>{
 export const deleteTelHotel = async (req,res) =>{
     try {
         await telefono_hotelModel.destroy({
-            where: {id: req.params.id}
+            where: {id_hotel: req.params.id}
         })
         res.json({"message":"¡Registro borrado correctamente!"})
     } catch (error) {

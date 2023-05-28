@@ -20,8 +20,8 @@ CREATE TABLE hotel(
 );
 
 CREATE TABLE categoria_hotel(
-	id_Hotel INT NOT NULL,
-	id_Categoria INT NOT NULL,
+	id_hotel INT NOT NULL,
+	id_categoria INT NOT NULL,
 	fecha_cambio DATE NOT NULL,
 	PRIMARY KEY (id_Hotel,id_Categoria),
 	FOREIGN KEY (id_Hotel) REFERENCES hotel(id),
@@ -29,7 +29,7 @@ CREATE TABLE categoria_hotel(
 );
 
 CREATE TABLE telefono_hotel(
-	id_Hotel INT NOT NULL,
+	id_hotel INT NOT NULL,
 	telefono VARCHAR (10) NOT NULL,
 	PRIMARY KEY (id_Hotel,telefono),
 	FOREIGN KEY (id_Hotel) REFERENCES hotel(id)
@@ -47,21 +47,21 @@ CREATE TABLE tipo_habitacion(
 
 CREATE TABLE habitacion(
 	id INT PRIMARY KEY NOT NULL,
-	id_TipoHabitacion INT NOT NULL,
+	id_tipohabitacion INT NOT NULL,
 	reservada INT NOT NULL, --Solo recibe 1 y 0
-	FOREIGN KEY (id_TipoHabitacion) REFERENCES tipo_habitacion(id)
+	FOREIGN KEY (id_tipoHabitacion) REFERENCES tipo_habitacion(id)
 );
 
 CREATE TABLE titular(
 	id INT PRIMARY KEY NOT NULL,
 	nombre VARCHAR (30) NOT NULL,
 	direccion VARCHAR (20) NOT NULL,
-	id_Agencia INT,
+	id_agencia INT,
 	FOREIGN KEY (id_Agencia) REFERENCES agencia(id)
 );
 
 CREATE TABLE telefono_titular(
-	id_Titular INT NOT NULL,
+	id_titular INT NOT NULL,
 	telefono VARCHAR (10) NOT NULL,
 	PRIMARY KEY (id_Titular,telefono),
 	FOREIGN KEY (id_Titular) REFERENCES titular(id)
@@ -71,7 +71,7 @@ CREATE TABLE acompanante(
 	id INT PRIMARY KEY NOT NULL,
 	nombre VARCHAR (30) NOT NULL,
 	edad INT NOT NULL,
-	id_Titular INT NOT NULL,
+	id_titular INT NOT NULL,
 	mascota INT NOT NULL, --Solo recibe 1 y 0
 	FOREIGN KEY (id_Titular) REFERENCES titular(id)
 );
@@ -128,8 +128,8 @@ CREATE TABLE pago(
 );
 
 CREATE TABLE pago_reserva(
-	id_Reserva INT NOT NULL,
-	id_Pago INT NOT NULL,
+	id_reserva INT NOT NULL,
+	id_pago INT NOT NULL,
 	total_pagado REAL,
 	PRIMARY KEY (id_Reserva,id_Pago),
 	FOREIGN KEY (id_Reserva) REFERENCES reserva(id),
@@ -137,8 +137,8 @@ CREATE TABLE pago_reserva(
 );
 
 CREATE TABLE servicio_reserva(
-	id_Reserva INT NOT NULL,
-	id_Servicio INT NOT NULL,
+	id_reserva INT NOT NULL,
+	id_servicio INT NOT NULL,
 	total_costo REAL,
 	PRIMARY KEY (id_Reserva,id_Servicio),
 	FOREIGN KEY (id_Reserva) REFERENCES reserva(id),

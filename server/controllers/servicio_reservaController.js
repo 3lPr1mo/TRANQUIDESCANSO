@@ -12,7 +12,7 @@ export const getAllServRes = async (req,res) =>{
 export const getServRes = async (req,res)=>{
     try {
         const ServResIn = await servicio_reservaModel.findAll({
-            where:{id:req.params.id}
+            where:{id_reserva:req.params.id}
         })
         res.json(ServResIn)
     } catch (error) {
@@ -32,7 +32,7 @@ export const createServRes = async(req,res)=>{
 export const updateServRes = async(req,res)=>{
     try {
         await servicio_reservaModel.update(req.body,{
-            where:{id:req.params.id}
+            where:{id_reserva:req.params.id}
         })
         res.json({"message":"¡Registro creado correctamente!"})
     } catch (error) {
@@ -43,7 +43,7 @@ export const updateServRes = async(req,res)=>{
 export const deleteServRes = async (req,res) =>{
     try {
         await servicio_reservaModel.destroy({
-            where: {id: req.params.id}
+            where: {id_reserva: req.params.id}
         })
         res.json({"message":"¡Registro borrado correctamente!"})
     } catch (error) {

@@ -10,11 +10,11 @@ const reserva = db.define('reserva',{
     valor:{type: DataTypes.REAL},
     valor_servicios:{type: DataTypes.REAL},
     estado:{type: DataTypes.NUMBER},
-    id_User:{type: DataTypes.STRING},
-    id_Hotel:{type: DataTypes.NUMBER},
-    id_Titular:{type: DataTypes.NUMBER},
-    id_Llegada:{type: DataTypes.NUMBER},
-    id_Salida:{type: DataTypes.NUMBER},
+    id_user:{type: DataTypes.STRING},
+    id_hotel:{type: DataTypes.NUMBER},
+    id_titular:{type: DataTypes.NUMBER},
+    id_llegada:{type: DataTypes.NUMBER},
+    id_salida:{type: DataTypes.NUMBER},
 },{
     timestamps:false,
     tableName: 'reserva'

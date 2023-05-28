@@ -55,93 +55,93 @@ router.delete('/elimCategHote/:id',deleteCategoHote);
 router.get('/AllTelHotel',getAllTelHotel);
 router.get('/TelHotel/:id',getTelHotel);
 router.post('/creaTelHotel',createTelHotel);
-router.put('/upTelHotel/:id',updateTelHotel);
-router.delete('/elimTelHotel/:id',deleteTelHotel);
-
+router.put('/upTelHotel/:id',updateTelHotel);//NO DEJA UPDATEAR
+router.delete('/elimTelHotel/:id',deleteTelHotel);// ELIMINA TODOS LOS NUMEROS RELACIONADOS A UN HOTEL
+//FUNCIONA BIEN
 //AGENCIA
 router.get('/AllAgencia',getAllAgencia);
 router.get('/Agencia/:id',getAgencia);
 router.post('/creaAgencia',createAgencia);
-router.put('/upAgencia/:id',updateAgencia);
-router.delete('/elimAgencia/:id',deleteAgencia);
-
+router.put('/upAgencia/:id',updateAgencia); 
+router.delete('/elimAgencia/:id',deleteAgencia); 
+//TA BIEN
 //TIPO_HABITACION
 router.get('/AllTipHabi',getAllTipHabi);
 router.get('/TipHabi/:id',getTipHabi);
 router.post('/creaTipHabi',createTipHabi);
 router.put('/upTipHabi/:id',updateTipHabi);
 router.delete('/elimTipHabi/:id',deleteTipHabi);
-
+//TA BIEN
 //HABITACION
 router.get('/AllHabitacion',getAllHabitacion);
 router.get('/Habitacion/:id',getHabitacion);
 router.post('/creaHabitacion',createHabitacion);
 router.put('/upHabitacion/:id',updateHabitacion);
 router.delete('/elimHabitacion/:id',deleteHabitacion);
-
+//FUNCIONA BIEN 
 //TITULAR
 router.get('/AllTitular',getAllTitular);
 router.get('/Titular/:id',getTitular);
 router.post('/creaTitular',createTitular);
 router.put('/upTitular/:id',updateTitular);
 router.delete('/elimTitular/:id',deleteTitular);
-
+// HAY QUE CORREGIR.
 //TELEFONO_TITULAR
-router.get('/AllTitular',getAllTelTitul);
-router.get('/Titular/:id',getTelTitul);
-router.post('/creaTitular',createTelTitul);
-router.put('/upTitular/:id',updateTelTitul);
-router.delete('/elimTitular/:id',deleteTelTitul);
-
+router.get('/AllTelTitular',getAllTelTitul);
+router.get('/TelTitular/:id',getTelTitul);
+router.post('/creaTelTitular',createTelTitul);
+router.put('/upTelTitular/:id',updateTelTitul); // NO deja actualizar, aparece ""llave duplicada viola restricción de unicidad «telefono_titular_pke
+router.delete('/elimTelTitular/:id',deleteTelTitul); // SI SE HACE UN DELETE SE BORRAN TODOS LOS NUMEROS
+//ESTA BIEN
 //ACOMPANANTE
 router.get('/AllAcompanante',getAllAcompanante);
 router.get('/Acompanante/:id',getAcompanante);
 router.post('/creaAcompanante',createAcompanante);
 router.put('/upAcompanante/:id',updateAcompanante);
 router.delete('/elimAcompanante/:id',deleteAcompanante);
-
+// NO FUNCIONA, APARECE EL ERROR DE "NO EXISTE LA RELACION HABITACION TITULAR"
 //HABITACION_TITULAR
 router.get('/AllHabiTitul',getAllHabiTitul);
 router.get('/HabiTitul/:id',getHabiTitul);
 router.post('/creaHabiTitul',createHabiTitul);
 router.put('/upHabiTitul/:id',updateHabiTitul);
 router.delete('/elimHabiTitul/:id',deleteHabiTitul);
-
+//ESTA BIEN
 //REGISTRO_LLEGADA
 router.get('/AllResLlega',getAllResLlega);
 router.get('/ResLlega/:id',getResLlega);
 router.post('/creaResLlega',createResLlega);
 router.put('/upResLlega/:id',updateResLlega);
 router.delete('/elimResLlega/:id',deleteResLlega);
-
+//ESTA BIEN
 //REGISTRO_SALIDA
 router.get('/AllRegSali',getAllRegSali);
 router.get('/RegSali/:id',getRegSali);
 router.post('/creaRegSali',createRegSali);
 router.put('/upRegSali/:id',updateRegSali);
 router.delete('/elimRegSali/:id',deleteRegSali);
-
+//YA FUNCIONA BIEN.
 //SERVICIO
 router.get('/AllServicio',getAllServicio);
 router.get('/Servicio/:id',getServicio);
 router.post('/creaServicio',createServicio);
 router.put('/upServicio/:id',updateServicio);
 router.delete('/elimServicio/:id',deleteServicio);
-
+//Agregar al SQL.
 //USUARIO
 router.get('/AllUser',getAllUser);
 router.get('/User/:id',getUser);
 router.post('/creaUser',createUser);
 router.put('/upUser/:id',updateUser);
 router.delete('/elimUser/:id',deleteUser);
-
+//No puedo revisarlo porque no existe la tabla user.    
 //RESERVA
 router.get('/AllReserva',getAllReserva);
 router.get('/Reserva/:id',getReserva);
 router.post('/creaReserva',createReserva);
 router.put('/upReserva/:id',updateReserva);
 router.delete('/elimReserva/:id',deleteReserva);
-
+// YA ESTA LISTO.
 //PAGO
 router.get('/AllPago',getAllPago);
 router.get('/Pago/:id',getPago);
@@ -150,12 +150,12 @@ router.put('/upPago/:id',updatePago);
 router.delete('/elimPago/:id',deletePago);
 
 //PAGO_RESERVA
-router.get('/AllPagoRes',getAllPagoRes);
-router.get('/PagoRes/:id',getPagoRes);
+router.get('/AllPagoRes',getAllPagoRes); 
+router.get('/PagoRes/:id',getPagoRes); 
 router.post('/creaPagoRes',createPagoRes);
-router.put('/upPagoRes/:id',updatePagoRes);
+router.put('/upPagoRes/:id',updatePagoRes); // actualiza todas los pagos y no solo uno
 router.delete('/elimPagoRes/:id',deletePagoRes);
-
+//YA TODO SIRVE.
 //SERVICIO_RESERVA
 router.get('/AllServRes',getAllServRes);
 router.get('/ServRes/:id',getServRes);
