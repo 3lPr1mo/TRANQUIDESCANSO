@@ -7,7 +7,10 @@ export default function home() {
       <Head>
         <title>TRANQUI HOME</title>
       </Head>
-      <Sidebar/>
+      <div className="flex">
+        <Sidebar />
+        <h3 className="ml-4">HOME PRUEBA</h3>
+      </div>
     </>
   );
 }
