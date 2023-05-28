@@ -12,7 +12,7 @@ export const getAllCategoHote = async (req,res) =>{
 export const getCategoHote = async (req,res)=>{
     try {
         const CategoHoteIn = await categoria_hotelModel.findAll({
-            where:{id:req.params.id}
+            where:{id_hotel:req.params.id}
         })
         res.json(CategoHoteIn)
     } catch (error) {
@@ -43,7 +43,7 @@ export const updateCategoHote = async(req,res)=>{
 export const deleteCategoHote = async (req,res) =>{
     try {
         await categoria_hotelModel.destroy({
-            where: {id: req.params.id}
+            where: {id_hotel: req.params.id}
         })
         res.json({"message":"¡Registro borrado correctamente!"})
     } catch (error) {
