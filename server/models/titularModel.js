@@ -1,4 +1,4 @@
-import { db } from "../database/db";
+import { db } from "../database/db.js";
 import {DataTypes} from "sequelize";
 
 const titular = db.define('titular',{
@@ -6,6 +6,9 @@ const titular = db.define('titular',{
     nombre:{type: DataTypes.STRING},
     direccion:{type: DataTypes.STRING},
     id_Agencia:{type: DataTypes.NUMBER},
-},{timestamps:false});
+},{
+    timestamps:false,
+    tableName: 'titular'
+});
 
 export default titular;

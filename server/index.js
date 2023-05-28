@@ -1,19 +1,19 @@
 import express from "express";
 import cors from 'cors';
 import {db} from "./database/db.js";
-//import Routes from './routes/routes.js';
+import Routes from './routes/routes.js';
 
 const app = express();
 
 app.use(cors({
-  origin: ["http://localhost:3000"],
+  origin: ["http://localhost:3001"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true
 }));
 
 app.use(express.json());
 
-//app.use('/Route', Routes);
+app.use('/Route', Routes);
 
 async function startServer() {
   try {
