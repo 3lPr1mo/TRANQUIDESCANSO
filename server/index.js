@@ -21,7 +21,7 @@ async function startServer() {
     console.log("Conexión exitosa");
 
     app.listen(3001, () => {
-      console.log('Servidor en ejecución en http://localhost:3001/Route/');
+      console.log('Servidor en ejecución en http://localhost:3001/Route');
     });
   } catch (error) {
     console.log(`El error de conexión es: ${error}`);
