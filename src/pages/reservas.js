@@ -30,6 +30,9 @@ export default function reservas() {
       </div>
       <ReservaList>
         <ReservasUI />
+        <ReservasUI />
+        <ReservasUI />
+        <ReservasUI />
       </ReservaList>
     </>
   );
