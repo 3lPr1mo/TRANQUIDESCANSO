@@ -1,4 +1,4 @@
-import { db } from "../database/db";
+import { db } from "../database/db.js";
 import {DataTypes} from "sequelize";
 
 const acompanante = db.define('acompanante',{
@@ -7,6 +7,9 @@ const acompanante = db.define('acompanante',{
     edad:{type: DataTypes.NUMBER},
     id_Titular:{type: DataTypes.NUMBER},
     mascota:{type: DataTypes.NUMBER},
-},{timestamps:false});
+},{
+    timestamps:false,
+    tableName: 'acompanante'
+});
 
 export default acompanante;

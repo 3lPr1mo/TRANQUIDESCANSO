@@ -1,4 +1,4 @@
-import { db } from "../database/db";
+import { db } from "../database/db.js";
 import {DataTypes} from "sequelize";
 
 const reserva = db.define('reserva',{
@@ -15,6 +15,9 @@ const reserva = db.define('reserva',{
     id_Titular:{type: DataTypes.NUMBER},
     id_Llegada:{type: DataTypes.NUMBER},
     id_Salida:{type: DataTypes.NUMBER},
-},{timestamps:false});
+},{
+    timestamps:false,
+    tableName: 'reserva'
+});
 
 export default reserva;
