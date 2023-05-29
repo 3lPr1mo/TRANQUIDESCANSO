@@ -13,7 +13,6 @@ function ReservaForm() {
     fechaFin: "",
     valor: "",
     valorServicios: "",
-    estado: "",
     hotel: "",
     titular: "",
   });
@@ -60,8 +59,17 @@ function ReservaForm() {
   }, []);
 
   const handleChangeCombobox2 = (e) => {
-    setShowExtraInput(e.target.value === "true");
-
+    const selectedOption = e.target.value === "true";
+    setShowExtraInput(selectedOption);
+    if (!selectedOption) {
+      setTitular((prevTitular) => ({
+        ...prevTitular,
+        id_Agencia: '',
+      }));
+      setAgencia({id: '', nombre: ''})
+    } else {
+      setAcomp({ id: '', nombre: '', edad: '', id_titular: '', mascota: '' });
+    }
   };
 
   const handleChange = (e) => {
@@ -72,6 +80,11 @@ function ReservaForm() {
   const handleChangeTitular = (e) => {
     const { name, value } = e.target;
     setTitular((prevTitular) => ({ ...prevTitular, [name]: value }));
+  };
+
+  const handleChangeTelefono = (e) => {
+    const { name, value } = e.target;
+    setTelefonos((prevTelefono) => ({ ...prevTelefono, [name]: value }));
   };
 
   const handleChangeAcomp = (e) => {
@@ -92,6 +105,15 @@ function ReservaForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    submitTitular()
+    //Si no pertenece a una agencia y trae acompañante
+    if(!showExtraInput && acomp){
+      submitAcomp() //Enviar datos de acompañante
+    }else if(showExtraInput){ //Si pertenece a una agencia
+      submitAgencia() //Enviar datos de agencia
+    }
+
+    //Enviar datos de reserva
     axios
       .post("http://localhost:3001/Route/creaServicio", reserva)
       .then((response) => {
@@ -103,6 +125,43 @@ function ReservaForm() {
         // Manejar el error de alguna manera
       });
   };
+
+  const submitTitular = () => {
+    axios
+      .post("http://localhost:3001/Route/creaUser", titular)
+      .then((response) => {
+        console.log("Reserva creada:", response.data);
+        // Realizar alguna acción adicional si es necesario
+      })
+      .catch((error) => {
+        console.error("Error al crear la reserva:", error);
+        // Manejar el error de alguna manera
+      });
+  }
+  const submitAgencia = () => {
+    axios
+      .post("http://localhost:3001/Route/creaAgencia", agencia)
+      .then((response) => {
+        console.log("Reserva creada:", response.data);
+        // Realizar alguna acción adicional si es necesario
+      })
+      .catch((error) => {
+        console.error("Error al crear la reserva:", error);
+        // Manejar el error de alguna manera
+      });
+  }
+  const submitAcomp = () => {
+    axios
+      .post("http://localhost:3001/Route/creaAcompanante", acomp)
+      .then((response) => {
+        console.log("Reserva creada:", response.data);
+        // Realizar alguna acción adicional si es necesario
+      })
+      .catch((error) => {
+        console.error("Error al crear la reserva:", error);
+        // Manejar el error de alguna manera
+      });
+  }
 
   return (
     <div className="max-w-md mx-auto">
@@ -156,6 +215,18 @@ function ReservaForm() {
               placeholder="digita un número"
               value={titular.direccion}
               onChange={handleChangeTitular}
+            />
+          </label>
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Telefono:
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="direccion"
+              type="text"
+              name="telefono"
+              placeholder="digita un número"
+              value={telefonos.telefono}
+              onChange={handleChangeTelefono}
             />
           </label>
           <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -358,18 +429,6 @@ function ReservaForm() {
               onChange={handleChange}
             />
           </label>
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            Estado:
-            <input
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              id="estado"
-              type="number"
-              name="estado"
-              placeholder="1 ó 0"
-              value={reserva.estado}
-              onChange={handleChange}
-            />
-          </label>
           <div className="flex flex-col">
             <label
               htmlFor="combo"
@@ -409,7 +468,6 @@ function ReservaForm() {
             />
           </label>
         </div>
-
         <div className="flex items-center justify-end mt-5">
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
