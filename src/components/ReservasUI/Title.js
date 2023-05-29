@@ -1,9 +1,11 @@
 const Title = () => {
-    return(
-        <h1 className="text-4xl text-gray-800 group-hover:text-white font-semibold">
-            RESERVAS
-        </h1>
-    )
-}
+  return (
+    <div className="flex item-center justify-center">
+      <h1 className="text-4xl text-gray-800 font-semibold">
+        RESERVAS
+      </h1>
+    </div>
+  );
+};
 
-export {Title}
+export { Title };

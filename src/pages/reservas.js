@@ -6,34 +6,33 @@ import { FilterButton } from "@/components/ReservasUI/FilterButton";
 import { AddButton } from "@/components/ReservasUI/AddButton";
 import { ReservaList } from "@/components/ReservasUI/ReservaList";
 import ReservasUI from "@/components/ReservasUI/ReservasUI";
-
 export default function reservas() {
   return (
-    <>
+    <div className="bg-white">
       <Head>
-        <title></title>
+        <title>RESERVAS</title>
       </Head>
-      <div className="grid grid-cols-2">
-        <div>
-          <Sidebar />
-        </div>
-        <div>
+      <div className="flex items-center justify-center">
+        <Sidebar />
+        <div className="flex flex-col justify-center items-center">
           <Title />
-        </div>
-        <div className="flex  place-items-center mt-10">
-          <Input />
-          <div>
-            <FilterButton />
-            <AddButton />
+          <div className="flex flex-row items-center"> {/* Contenedor flex para los componentes */}
+            <Input />
+            <div className="mt-10 ml-2"> {/* Espacio entre los componentes */}
+              <FilterButton />
+              <AddButton />
+            </div>
           </div>
         </div>
       </div>
-      <ReservaList>
-        <ReservasUI />
-        <ReservasUI />
-        <ReservasUI />
-        <ReservasUI />
-      </ReservaList>
-    </>
+      <div className="bg-white">
+        <ReservaList>
+          <ReservasUI />
+          <ReservasUI />
+          <ReservasUI />
+          <ReservasUI />
+        </ReservaList>
+      </div>
+    </div>
   );
 }
