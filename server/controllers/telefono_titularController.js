@@ -12,7 +12,7 @@ export const getAllTelTitul = async (req,res) =>{
 export const getTelTitul = async (req,res)=>{
     try {
         const ciudadIn = await telefono_titularModel.findAll({
-            where:{id:req.params.id}
+            where:{id_titular:req.params.id}
         })
         res.json(ciudadIn)
     } catch (error) {
@@ -32,7 +32,7 @@ export const createTelTitul = async(req,res)=>{
 export const updateTelTitul = async(req,res)=>{
     try {
         await telefono_titularModel.update(req.body,{
-            where:{id:req.params.id}
+            where:{id_titular:req.params.id}
         })
         res.json({"message":"¡Registro creado correctamente!"})
     } catch (error) {
@@ -43,7 +43,7 @@ export const updateTelTitul = async(req,res)=>{
 export const deleteTelTitul = async (req,res) =>{
     try {
         await telefono_titularModel.destroy({
-            where: {id: req.params.id}
+            where: {id_titular: req.params.id}
         })
         res.json({"message":"¡Registro borrado correctamente!"})
     } catch (error) {

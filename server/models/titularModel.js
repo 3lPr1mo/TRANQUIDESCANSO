@@ -5,7 +5,7 @@ const titular = db.define('titular',{
     id:{type: DataTypes.NUMBER, primaryKey: true},
     nombre:{type: DataTypes.STRING},
     direccion:{type: DataTypes.STRING},
-    id_Agencia:{type: DataTypes.NUMBER},
+    id_agencia:{type: DataTypes.NUMBER},
 },{
     timestamps:false,
     tableName: 'titular'

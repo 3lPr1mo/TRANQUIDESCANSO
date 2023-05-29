@@ -12,7 +12,7 @@ export const getAllPagoRes = async (req,res) =>{
 export const getPagoRes = async (req,res)=>{
     try {
         const PagoResIn = await pago_reservaModel.findAll({
-            where:{id:req.params.id}
+            where:{id_reserva:req.params.id}
         })
         res.json(PagoResIn)
     } catch (error) {
@@ -32,7 +32,7 @@ export const createPagoRes = async(req,res)=>{
 export const updatePagoRes = async(req,res)=>{
     try {
         await pago_reservaModel.update(req.body,{
-            where:{id:req.params.id}
+            where:{id_reserva:req.params.id}
         })
         res.json({"message":"¡Registro creado correctamente!"})
     } catch (error) {
@@ -43,7 +43,7 @@ export const updatePagoRes = async(req,res)=>{
 export const deletePagoRes = async (req,res) =>{
     try {
         await pago_reservaModel.destroy({
-            where: {id: req.params.id}
+            where: {id_reserva: req.params.id}
         })
         res.json({"message":"¡Registro borrado correctamente!"})
     } catch (error) {
