@@ -1,3 +1,4 @@
+import { db } from "../database/db.js";
 import telefono_hotelModel from "../models/telefono_hotelModel.js";
 
 export const getAllTelHotel = async (req,res) =>{
@@ -34,7 +35,7 @@ export const updateTelHotel = async(req,res)=>{
         await telefono_hotelModel.update(req.body,{
             where:{id_hotel:req.params.id}
         })
-        res.json({"message":"¡Registro creado correctamente!"})
+        res.json({"message":"¡Registro acualizado correctamente!"})
     } catch (error) {
         res.json({message: error.message})
     }
@@ -42,9 +43,10 @@ export const updateTelHotel = async(req,res)=>{
 
 export const deleteTelHotel = async (req,res) =>{
     try {
-        await telefono_hotelModel.destroy({
-            where: {id_hotel: req.params.id}
-        })
+        await db.query(
+            `DELETE FROM telefono_hotel
+            WHERE telefono = '${req.params.id}';`
+        )
         res.json({"message":"¡Registro borrado correctamente!"})
     } catch (error) {
         res.json({message: error.message})

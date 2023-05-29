@@ -18,11 +18,16 @@ import { createReserva, deleteReserva, getAllReserva, getReserva, updateReserva 
 import { createPago, deletePago, getAllPago, getPago, updatePago } from "../controllers/pagoController.js";
 import { createPagoRes, deletePagoRes, getAllPagoRes, getPagoRes, updatePagoRes } from "../controllers/pago_reservaController.js";
 import { createServRes, deleteServRes, getAllServRes, getServRes, updateServRes } from "../controllers/servicio_reservaController.js";
-import { createUser, deleteUser, getAllUser, getUser, updateUser } from "../controllers/usuarioController.js";
+import { getVistaHotel } from "../controllers/vistasController.js";
 
 
 const router = express.Router();
 
+//----------VISTAS-----------------
+router.get('/VistHotel',getVistaHotel);
+
+
+//----------TABLAS-----------------
 //CIUDAD
 router.get('/AllCiudad',getAllCiudad);
 router.get('/Ciudad/:id',getCiudad);
@@ -44,6 +49,7 @@ router.post('/creaHotel',createHotel);
 router.put('/upHotel/:id',updateHotel);
 router.delete('/elimHotel/:id',deleteHotel);
 
+
 //CATEGORIA_HOTEL
 router.get('/AllCategHote',getAllCategoHote);
 router.get('/CategHote/:id',getCategoHote);
@@ -55,8 +61,8 @@ router.delete('/elimCategHote/:id',deleteCategoHote);
 router.get('/AllTelHotel',getAllTelHotel);
 router.get('/TelHotel/:id',getTelHotel);
 router.post('/creaTelHotel',createTelHotel);
-router.put('/upTelHotel/:id',updateTelHotel);//NO DEJA UPDATEAR
-router.delete('/elimTelHotel/:id',deleteTelHotel);// ELIMINA TODOS LOS NUMEROS RELACIONADOS A UN HOTEL
+router.put('/upTelHotel/:id',updateTelHotel);//PRUEBEN
+router.delete('/elimTelHotel/:id',deleteTelHotel);// PRUEBEN :id Tiene que ser el telefono
 //FUNCIONA BIEN
 //AGENCIA
 router.get('/AllAgencia',getAllAgencia);
@@ -90,8 +96,8 @@ router.delete('/elimTitular/:id',deleteTitular);
 router.get('/AllTelTitular',getAllTelTitul);
 router.get('/TelTitular/:id',getTelTitul);
 router.post('/creaTelTitular',createTelTitul);
-router.put('/upTelTitular/:id',updateTelTitul); // NO deja actualizar, aparece ""llave duplicada viola restricción de unicidad «telefono_titular_pke
-router.delete('/elimTelTitular/:id',deleteTelTitul); // SI SE HACE UN DELETE SE BORRAN TODOS LOS NUMEROS
+router.put('/upTelTitular/:id',updateTelTitul); 
+router.delete('/elimTelTitular/:id',deleteTelTitul); // PRUEBEN :id Tiene que ser el telefono
 //ESTA BIEN
 //ACOMPANANTE
 router.get('/AllAcompanante',getAllAcompanante);
@@ -99,7 +105,8 @@ router.get('/Acompanante/:id',getAcompanante);
 router.post('/creaAcompanante',createAcompanante);
 router.put('/upAcompanante/:id',updateAcompanante);
 router.delete('/elimAcompanante/:id',deleteAcompanante);
-// NO FUNCIONA, APARECE EL ERROR DE "NO EXISTE LA RELACION HABITACION TITULAR"
+
+//PROBAR TABLA
 //HABITACION_TITULAR
 router.get('/AllHabiTitul',getAllHabiTitul);
 router.get('/HabiTitul/:id',getHabiTitul);
@@ -127,14 +134,7 @@ router.get('/Servicio/:id',getServicio);
 router.post('/creaServicio',createServicio);
 router.put('/upServicio/:id',updateServicio);
 router.delete('/elimServicio/:id',deleteServicio);
-//Agregar al SQL.
-//USUARIO
-router.get('/AllUser',getAllUser);
-router.get('/User/:id',getUser);
-router.post('/creaUser',createUser);
-router.put('/upUser/:id',updateUser);
-router.delete('/elimUser/:id',deleteUser);
-//No puedo revisarlo porque no existe la tabla user.    
+  
 //RESERVA
 router.get('/AllReserva',getAllReserva);
 router.get('/Reserva/:id',getReserva);
@@ -153,7 +153,7 @@ router.delete('/elimPago/:id',deletePago);
 router.get('/AllPagoRes',getAllPagoRes); 
 router.get('/PagoRes/:id',getPagoRes); 
 router.post('/creaPagoRes',createPagoRes);
-router.put('/upPagoRes/:id',updatePagoRes); // actualiza todas los pagos y no solo uno
+router.put('/upPagoRes/:id',updatePagoRes); //No se puede tocar, se calcula mediante un trigger
 router.delete('/elimPagoRes/:id',deletePagoRes);
 //YA TODO SIRVE.
 //SERVICIO_RESERVA

@@ -1,3 +1,4 @@
+import { db } from "../database/db.js";
 import reservaModel from "../models/reservaModel.js";
 
 export const getAllReserva = async (req,res) =>{
@@ -11,9 +12,14 @@ export const getAllReserva = async (req,res) =>{
 
 export const getReserva = async (req,res)=>{
     try {
-        const ReservaIn = await reservaModel.findAll({
-            where:{id:req.params.id}
-        })
+        const ReservaIn = await db.query(
+            `SELECT r.id, r.num_habitaciones, r.num_personas, r.fecha_inic, r.fecha_fin, r.valor, r.valor_servicios, r.estado,
+            h.nombre AS nombre_hotel,
+            t.nombre AS nombre_titular
+            FROM reserva r
+            JOIN hotel h ON r.id_Hotel = h.id
+            JOIN titular t ON r.id_Titular = t.id WHERE r.id = ${req.params.id};`  
+        )
         res.json(ReservaIn)
     } catch (error) {
         res.json({message: error.message})

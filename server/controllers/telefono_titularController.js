@@ -42,9 +42,10 @@ export const updateTelTitul = async(req,res)=>{
 
 export const deleteTelTitul = async (req,res) =>{
     try {
-        await telefono_titularModel.destroy({
-            where: {id_titular: req.params.id}
-        })
+        await db.query(
+            `DELETE FROM telefono_titular
+            WHERE telefono = '${req.params.id}';`
+        )
         res.json({"message":"¡Registro borrado correctamente!"})
     } catch (error) {
         res.json({message: error.message})
