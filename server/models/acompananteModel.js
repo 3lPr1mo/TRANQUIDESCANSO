@@ -5,7 +5,7 @@ const acompanante = db.define('acompanante',{
     id:{type: DataTypes.NUMBER, primaryKey: true},
     nombre:{type: DataTypes.STRING},
     edad:{type: DataTypes.NUMBER},
-    id_Titular:{type: DataTypes.NUMBER},
+    id_titular:{type: DataTypes.NUMBER},
     mascota:{type: DataTypes.NUMBER},
 },{
     timestamps:false,

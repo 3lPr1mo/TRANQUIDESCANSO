@@ -3,7 +3,7 @@ import {DataTypes} from "sequelize";
 
 const habitacion = db.define('habitacion',{
     id:{type: DataTypes.NUMBER, primaryKey: true},
-    id_TipoHabitacion:{type: DataTypes.NUMBER},
+    id_tipohabitacion:{type: DataTypes.NUMBER},
     reservada:{type: DataTypes.NUMBER},
 },{
     timestamps:false,
