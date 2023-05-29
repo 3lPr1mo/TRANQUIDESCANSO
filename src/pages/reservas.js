@@ -28,9 +28,6 @@ export default function reservas() {
       <div className="bg-white">
         <ReservaList>
           <ReservasUI />
-          <ReservasUI />
-          <ReservasUI />
-          <ReservasUI />
         </ReservaList>
       </div>
     </div>
