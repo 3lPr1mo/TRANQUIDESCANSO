@@ -1,16 +1,18 @@
+-- SECUENCIA
+CREATE SEQUENCE secuencia_comun START 1;
 --------TABLES-------
 CREATE TABLE ciudad(
-	id INT PRIMARY KEY NOT NULL,
+	id SERIAL PRIMARY KEY NOT NULL, --AutoIncrementado
 	nombre VARCHAR (10) NOT NULL
 );
 
 CREATE TABLE categoria(
-	id INT PRIMARY KEY NOT NULL,
+	id SERIAL PRIMARY KEY NOT NULL, --AutoIncrementado
 	num_estrella VARCHAR (1) NOT NULL
 );
 
 CREATE TABLE hotel(
-	id INT PRIMARY KEY NOT NULL,
+	id SERIAL PRIMARY KEY NOT NULL, --AutoIncrementado
 	nombre VARCHAR (20) NOT NULL,
 	direccion VARCHAR (20) NOT NULL,
 	anio_inaguracion VARCHAR (4) NOT NULL,
@@ -20,8 +22,8 @@ CREATE TABLE hotel(
 );
 
 CREATE TABLE categoria_hotel(
-	id_hotel INT NOT NULL,
-	id_categoria INT NOT NULL,
+	id_Hotel INT NOT NULL,
+	id_Categoria INT NOT NULL,
 	fecha_cambio DATE NOT NULL,
 	PRIMARY KEY (id_Hotel,id_Categoria),
 	FOREIGN KEY (id_Hotel) REFERENCES hotel(id),
@@ -29,39 +31,39 @@ CREATE TABLE categoria_hotel(
 );
 
 CREATE TABLE telefono_hotel(
-	id_hotel INT NOT NULL,
+	id_Hotel INT NOT NULL,
 	telefono VARCHAR (10) NOT NULL,
 	PRIMARY KEY (id_Hotel,telefono),
 	FOREIGN KEY (id_Hotel) REFERENCES hotel(id)
 );
 
 CREATE TABLE agencia(
-	id INT PRIMARY KEY NOT NULL,
+	id SERIAL PRIMARY KEY NOT NULL, --AutoIncrementado
 	nombre VARCHAR (10) NOT NULL
 );
 
 CREATE TABLE tipo_habitacion(
-	id INT PRIMARY KEY NOT NULL,
+	id SERIAL PRIMARY KEY NOT NULL, --AutoIncrementado
 	nombre VARCHAR (10) NOT NULL
 );
 
 CREATE TABLE habitacion(
-	id INT PRIMARY KEY NOT NULL,
-	id_tipohabitacion INT NOT NULL,
+	id SERIAL PRIMARY KEY NOT NULL, --AutoIncrementado
+	id_TipoHabitacion INT NOT NULL,
 	reservada INT NOT NULL, --Solo recibe 1 y 0
-	FOREIGN KEY (id_tipoHabitacion) REFERENCES tipo_habitacion(id)
+	FOREIGN KEY (id_TipoHabitacion) REFERENCES tipo_habitacion(id)
 );
 
 CREATE TABLE titular(
 	id INT PRIMARY KEY NOT NULL,
 	nombre VARCHAR (30) NOT NULL,
 	direccion VARCHAR (20) NOT NULL,
-	id_agencia INT,
+	id_Agencia INT,
 	FOREIGN KEY (id_Agencia) REFERENCES agencia(id)
 );
 
 CREATE TABLE telefono_titular(
-	id_titular INT NOT NULL,
+	id_Titular INT NOT NULL,
 	telefono VARCHAR (10) NOT NULL,
 	PRIMARY KEY (id_Titular,telefono),
 	FOREIGN KEY (id_Titular) REFERENCES titular(id)
@@ -71,7 +73,7 @@ CREATE TABLE acompanante(
 	id INT PRIMARY KEY NOT NULL,
 	nombre VARCHAR (30) NOT NULL,
 	edad INT NOT NULL,
-	id_titular INT NOT NULL,
+	id_Titular INT NOT NULL,
 	mascota INT NOT NULL, --Solo recibe 1 y 0
 	FOREIGN KEY (id_Titular) REFERENCES titular(id)
 );
@@ -85,22 +87,23 @@ CREATE TABLE habitacion_titular(
 );
 
 CREATE TABLE registro_llegada(
-	id INT PRIMARY KEY NOT NULL,
+	id SERIAL PRIMARY KEY NOT NULL, --AutoIncrementado
 	fecha DATE NOT NULL,
 	hora TIME NOT NULL
 );
 
 CREATE TABLE registro_salida(
-	id INT PRIMARY KEY NOT NULL,
+	id SERIAL PRIMARY KEY NOT NULL, --AutoIncrementado
 	fecha DATE NOT NULL,
 	hora TIME (5) NOT NULL
 );
 
 CREATE TABLE servicio(
-	id INT PRIMARY KEY NOT NULL,
+	id SERIAL PRIMARY KEY NOT NULL, --AutoIncrementado
 	nombre VARCHAR (10) NOT NULL,
 	valor REAL NOT NULL
 );
+
 
 CREATE TABLE reserva(
 	id INT PRIMARY KEY NOT NULL,
@@ -122,14 +125,14 @@ CREATE TABLE reserva(
 );
 
 CREATE TABLE pago(
-	id INT PRIMARY KEY NOT NULL,
+	id SERIAL PRIMARY KEY NOT NULL, --AutoIncrementado
 	fecha_pago DATE NOT NULL,
 	valor REAL NOT NULL
 );
 
 CREATE TABLE pago_reserva(
-	id_reserva INT NOT NULL,
-	id_pago INT NOT NULL,
+	id_Reserva INT NOT NULL,
+	id_Pago INT NOT NULL,
 	total_pagado REAL,
 	PRIMARY KEY (id_Reserva,id_Pago),
 	FOREIGN KEY (id_Reserva) REFERENCES reserva(id),
@@ -137,8 +140,8 @@ CREATE TABLE pago_reserva(
 );
 
 CREATE TABLE servicio_reserva(
-	id_reserva INT NOT NULL,
-	id_servicio INT NOT NULL,
+	id_Reserva INT NOT NULL,
+	id_Servicio INT NOT NULL,
 	total_costo REAL,
 	PRIMARY KEY (id_Reserva,id_Servicio),
 	FOREIGN KEY (id_Reserva) REFERENCES reserva(id),
@@ -162,6 +165,16 @@ CHECK (reservada >= 0 AND reservada <= 1);
 ALTER TABLE acompanante 
 ADD CONSTRAINT  mascota_chk 
 CHECK (mascota >= 0 AND mascota <= 1);
+
+---------VISTAS--------------
+CREATE VIEW vista_hotel AS
+SELECT h.id, h.nombre, h.direccion, h.anio_inaguracion, h.antiguedad, c.nombre AS nombre_ciudad
+FROM hotel h
+INNER JOIN ciudad c ON h.id_ciudad = c.id;
+
+SELECT*FROM vista_hotel;
+
+
 --------FUNCIONES---------
 
 --------FUNCION SUMAR PAGOS DE UNA RESERVA%--------- 
@@ -242,6 +255,10 @@ CREATE TRIGGER trigger_activar_cambiar_estado_reserva
 AFTER INSERT OR UPDATE OF id_Reserva ON pago_reserva
 FOR EACH ROW
 EXECUTE FUNCTION trigger_cambiar_estado_reserva();
+
+
+DROP TRIGGER trigger_activar_cambiar_estado_reserva ON pago_reserva;
+DROP FUNCTION trigger_cambiar_estado_reserva;
 
 ----FUNCION PARA CAMBIAR ESTADO HABITACION
 CREATE FUNCTION cambiarEstadoHabitacion(idReserva INT)
@@ -327,7 +344,7 @@ $$
 DECLARE
     total_servicios REAL;
 BEGIN
-    SELECT COALESCE(SUM(servicio.valore), 0)
+    SELECT COALESCE(SUM(servicio.valor), 0)
     INTO total_servicios
     FROM servicio_reserva
     JOIN servicio ON servicio_reserva.id_Servicio = servicio.id
@@ -373,28 +390,31 @@ FOR EACH ROW
 EXECUTE FUNCTION actualizar_valor_servicios();
 
 ------INSERTS 
-INSERT INTO ciudad (id, nombre) 
-VALUES (1, 'Ciudad A'), 
-       (2, 'Ciudad B'), 
-       (3, 'Ciudad C'); 
+INSERT INTO ciudad (nombre) 
+VALUES ('Ciudad A'), 
+       ('Ciudad B'), 
+       ('Ciudad C');
 	   
 -- Insertar valores en la tabla categoria
-INSERT INTO categoria (id, num_estrella)
-VALUES (1, '3'),
-       (2, '4'),
-       (3, '5');
+INSERT INTO categoria (num_estrella)
+VALUES ('1'),
+       ('2'),
+       ('3'),
+	   ('4'),
+	   ('5');
 
 -- Insertar valores en la tabla hotel 
-INSERT INTO hotel (id, nombre, direccion, anio_inaguracion, antiguedad, id_ciudad) 
-VALUES (1, 'Hotel X', 'Dirección X', '2000', 23, 1), 
-       (2, 'Hotel Y', 'Dirección Y', '1998', 25, 2), 
-       (3, 'Hotel Z', 'Dirección Z', '2010', 13, 3);
+INSERT INTO hotel (nombre, direccion, anio_inaguracion, antiguedad, id_ciudad) 
+VALUES ('Hotel X', 'Dirección X', '2000', 23, 1), 
+       ('Hotel Y', 'Dirección Y', '1998', 25, 2), 
+       ('Hotel Z', 'Dirección Z', '2010', 13, 3);
 
 -- Insertar valores en la tabla categoria_hotel
 INSERT INTO categoria_hotel (id_Hotel, id_Categoria, fecha_cambio)
 VALUES (1, 1, '2022-01-01'),
        (2, 2, '2022-01-01'),
        (3, 3, '2022-01-01');
+
 
 -- Insertar valores en la tabla telefono_hotel 
 INSERT INTO telefono_hotel (id_Hotel, telefono) 
@@ -403,22 +423,22 @@ VALUES (1, '1234567890'),
        (3, '5555555555'); 
 
 -- Insertar valores en la tabla agencia 
-INSERT INTO agencia (id, nombre) 
-VALUES (1, 'Agencia A'), 
-       (2, 'Agencia B'), 
-       (3, 'Agencia C'); 
+INSERT INTO agencia (nombre) 
+VALUES ('Agencia A'), 
+       ('Agencia B'), 
+       ('Agencia C'); 
 	   
 -- Insertar valores en la tabla tipo_habitacion 
-INSERT INTO tipo_habitacion (id, nombre) 
-VALUES (1, 'Individual'), 
-       (2, 'Doble'), 
-       (3, 'Suite'); 
+INSERT INTO tipo_habitacion (nombre) 
+VALUES ('Individual'), 
+       ('Doble'), 
+       ('Suite'); 
 
 -- Insertar valores en la tabla habitacion 
-INSERT INTO habitacion (id, id_TipoHabitacion, reservada) 
-VALUES (1, 1, 0), 
-       (2, 1, 1), 
-       (3, 2, 1); 
+INSERT INTO habitacion (id_TipoHabitacion, reservada) 
+VALUES (1, 1), 
+       (1, 1), 
+       (2, 1); 
 
 -- Insertar valores en la tabla titular 
 
@@ -449,22 +469,22 @@ VALUES (1, 1),
        (3, 3); 
  
 -- Insertar valores en la tabla registro_llegada 
-INSERT INTO registro_llegada (id, fecha, hora) 
-VALUES (1, '2022-01-01', '15:00:00'), 
-       (2, '2022-02-15', '15:30:00'), 
-       (3, '2022-03-20', '16:45:00'); 
+INSERT INTO registro_llegada (fecha, hora) 
+VALUES ('2022-01-01', '15:00:00'), 
+       ('2022-02-15', '15:30:00'), 
+       ('2022-03-20', '16:45:00'); 
 
 -- Insertar valores en la tabla registro_salida 
-INSERT INTO registro_salida (id, fecha, hora) 
-VALUES (1, '2022-01-05', '10:00:00'), 
-       (2, '2022-01-06', '11:30:00'), 
-       (3, '2022-01-07', '09:45:00'); 
+INSERT INTO registro_salida (fecha, hora) 
+VALUES ('2022-01-05', '10:00:00'), 
+       ('2022-01-06', '11:30:00'), 
+       ('2022-01-07', '09:45:00'); 
 
 -- Insertar valores en la tabla servicio 
-INSERT INTO servicio (id, nombre, valor) 
-VALUES (1, 'Servicio A', 50.0), 
-       (2, 'Servicio B', 75.0), 
-       (3, 'Servicio C', 100.0); 	
+INSERT INTO servicio (nombre, valor) 
+VALUES ('Servicio A', 50.0), 
+       ('Servicio B', 75.0), 
+       ('Servicio C', 100.0); 	
 
 -- Insertar valores en la tabla reserva 
 INSERT INTO reserva (id, num_habitaciones, num_personas, fecha_inic, fecha_fin, valor, estado, id_Hotel, id_Titular) 
@@ -473,10 +493,10 @@ VALUES (1, 2, 4, '2022-01-01', '2022-01-05', 500.0, 1, 1, 1),
        (3, 3, 6, '2022-01-03', '2022-01-07', 750.0, 1, 3, 3); 
 
 -- Insertar valores en la tabla pago 
-INSERT INTO pago (id, fecha_pago, valor) 
-VALUES (1, '2022-01-02', 200.0), 
-       (2, '2022-01-03', 100.0), 
-       (3, '2022-01-04', 150.0);  
+INSERT INTO pago (fecha_pago, valor) 
+VALUES ('2022-01-02', 200.0), 
+       ('2022-01-03', 100.0), 
+       ('2022-01-04', 150.0);  
 
 -- Insertar valores en la tabla servicio_reserva 
 INSERT INTO servicio_reserva (id_Reserva, id_Servicio, total_costo) 
