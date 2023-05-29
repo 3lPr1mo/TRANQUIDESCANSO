@@ -28,9 +28,6 @@ export default function hoteles() {
       <div className="bg-white">
         <HotelesList>
           <HotelesUI />
-          <HotelesUI />
-          <HotelesUI />
-          <HotelesUI />
         </HotelesList>
       </div>
     </div>
