@@ -1,7 +1,7 @@
 import { db } from "../database/db.js";
 import {DataTypes} from "sequelize";
 
-const habitaciontitular = db.define('habitaciontitular',{
+const habitacion_titular = db.define('habitacion_titular',{
     id_Titular:{type: DataTypes.NUMBER, primaryKey: true},
     id_Habitacion:{type: DataTypes.STRING, primaryKey: true},
 },{
@@ -9,4 +9,4 @@ const habitaciontitular = db.define('habitaciontitular',{
     tableName: 'habitaciontitular'
 });
 
-export default habitaciontitular;
+export default habitacion_titular;
