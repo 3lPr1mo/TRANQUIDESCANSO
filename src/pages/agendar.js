@@ -20,9 +20,6 @@ function ReservaForm() {
     id_salida: null,
   });
 
-  //idHotel
-  const [idHotel, setIdHotel] = useState(null);
-
   //Objeto titular
   const [titular, setTitular] = useState({
     id: null,
@@ -52,6 +49,12 @@ function ReservaForm() {
     nombre: "",
   });
 
+  //Objeto registro llegada
+  const [fechaInicio, setFechaInicio] = useState("")
+
+  //Objeto registro salida
+  const [fechaFinal, setFechaFinal] = useState("")
+
   //Estados para condicionales
   const [serviciosOption, setServiciosOption] = useState("");
   //Estado para obtener el valor del hotel seleccionado en el combobox
@@ -67,6 +70,7 @@ function ReservaForm() {
       .get("http://localhost:3001/Route/AllHotel")
       .then((response) => {
         setHoteles(response.data); //Almacena la lista de hoteles
+        console.log(response.data)
       })
       .catch((error) => {
         console.error("Error al obtener la lista de hoteles", error);
@@ -91,23 +95,28 @@ function ReservaForm() {
     setTelefono((prevTelefono) => ({ ...prevTelefono, [name]: value }));
     console.log(telefo);
   };
-
   // condicional de si va a tomar o no servicios
   const handleReservaRadioButton = (e) => {
     setServiciosOption(e.target.value);
   };
-
   //setter el valor escogido en el combobox de hotel
   const handleChangeHotelBox = (e) => {
     setComboHotelOption(e.target.value); //almacena el valor
     setReserva((prevReserva) => ({ ...prevReserva, id_hotel: e.target.value })); //se settea la foranea id_hotel en reserva
   };
+  //setter de la fecha de inicio
+  const handleFechaInicio = (e) => {
+    setFechaInicio(e.target.value)
+  }
+  //setter de la fecha final
+  const handleFechaFinal = (e) => {
+    setFechaFinal(e.target.value)
+  }
   //setter el valor escogido en el combobox de hotel
   const handlePertenece = (e) => {
     setPertenece(e.target.value); //almacena el valor
     //reserva.id_hotel = comboHotelOption
   };
-
   const handleAgencia = (e) => {
     setAgencia(e.target.value); //almacena el valor
     setTitular((prevTitular) => ({ ...prevTitular, id_agencia: agencia.id })); //settea la foranea de id_agencia en caso de pertenecer
@@ -123,12 +132,93 @@ function ReservaForm() {
       ...prevTelefono,
       id_titular: titular.id,
     }));
-    console.log("despues de submit: "+telefo.id_titular);
-    console.log("despues de submit: "+telefo.telefono);
+    console.log("despues de submit: " + telefo.id_titular);
+    console.log("despues de submit: " + telefo.telefono);
     //se settea e id_titular en reserva
     setReserva((prevReserva) => ({ ...prevReserva, id_titular: titular.id }));
-    console.log(reserva)
-    console.log(titular)
+    console.log(reserva);
+    console.log(titular);
+
+    enviarReserva();
+  };
+
+  const enviarReserva = async () => {
+    try {
+      const jsonReserva = JSON.stringify(reserva);
+      const jsonTitular = JSON.stringify(titular);
+      const jsonTelefono = JSON.stringify(telefo);
+      let response = await axios.post(
+        "http:localhost:3001/Route/creaReserva",
+        jsonReserva,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      //Verificar el codigo de estado de la respuesta
+      if (response.status === 200) {
+        console.log("Se envió correctamente");
+      } else {
+        console.log("Error al enviar la reserva");
+      }
+
+      response = await axios.post(
+        "http:localhost:3001/Route/creaTitular",
+        jsonTitular,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      //Verificar el codigo de estado de la respuesta
+      if (response.status === 200) {
+        console.log("Se envió correctamente");
+      } else {
+        console.log("Error al enviar la reserva");
+      }
+
+      response = await axios.post(
+        "http:localhost:3001/Route/creaTelTitular",
+        jsonTelefono,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      //Verificar el codigo de estado de la respuesta
+      if (response.status === 200) {
+        console.log("Se envió correctamente");
+      } else {
+        console.log("Error al enviar la reserva");
+      }
+
+      if (agencia != null) {
+        const jsonAgencia = JSON.stringify(agencia);
+        await axios.post("http:localhost:3001/Route/creaAgencia", jsonAgencia, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        //Verificar el codigo de estado de la respuesta
+        if (response.status === 200) {
+          console.log("Se envió correctamente");
+        } else {
+          console.log("Error al enviar la reserva");
+        }
+      }
+
+      //Verificar el codigo de estado de la respuesta
+      if (response.status === 200) {
+        console.log("Se envió correctamente");
+      } else {
+        console.log("Error al enviar la reserva");
+      }
+    } catch (error) {
+      console.log("Error al enviar la reserva: ", error);
+    }
   };
 
   return (
@@ -265,11 +355,11 @@ function ReservaForm() {
             onChange={handleChangeHotelBox}
           >
             <option value="">-- Seleccione --</option>
-            {hoteles.map((hotel) => {
+            {hoteles.map((hotel) => (
               <option key={hotel.id} value={hotel.id}>
                 {hotel.nombre}
-              </option>;
-            })}
+              </option>
+            ))}
           </select>
         </label>
         {/* AQUI EMPIEZA EL FORMULARIO DEL TITULAR */}
