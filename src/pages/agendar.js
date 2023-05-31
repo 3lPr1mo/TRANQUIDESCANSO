@@ -45,8 +45,7 @@ function ReservaForm() {
 
   //Objeto agencia
   const [agencia, setAgencia] = useState({
-    id: null,
-    nombre: "",
+    nombre: null,
   });
 
   //Objeto registro llegada
@@ -113,7 +112,10 @@ function ReservaForm() {
   //setter el valor escogido en el combobox de hotel
   const handleChangeHotelBox = (e) => {
     setComboHotelOption(e.target.value); //almacena el valor
-    setReserva((prevReserva) => ({ ...prevReserva, id_hotel: parseInt(e.target.value) })); //se settea la foranea id_hotel en reserva
+    setReserva((prevReserva) => ({
+      ...prevReserva,
+      id_hotel: parseInt(e.target.value),
+    })); //se settea la foranea id_hotel en reserva
   };
   //setter de la fecha de inicio
   const handleFechaInicio = (e) => {
@@ -129,13 +131,15 @@ function ReservaForm() {
     //reserva.id_hotel = comboHotelOption
   };
   const handleAgencia = (e) => {
-    setAgencia(e.target.value); //almacena el valor
-    setTitular((prevTitular) => ({ ...prevTitular, id_agencia: parseInt(agencia.id) })); //settea la foranea de id_agencia en caso de pertenecer
-    console.log("Id de la agencia en titular: " + titular.id_agencia);
+    const { name, value } = e.target;
+    //setAgencia(e.target.value); //almacena el nombre de la agencia
+    setAgencia((prevAgencia) => ({ ...prevAgencia, [name]: value }));
+    //setTitular((prevTitular) => ({ ...prevTitular, id_agencia: parseInt(agencia.id) })); //settea la foranea de id_agencia en caso de pertenecer
+    //console.log("Id de la agencia en titular: " + titular.id_agencia);
   };
 
   //Funcion para enviar los datos a la base de datos
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); //Evitar que se recargue la pagina
     //Settear las claves foraneas
     //id_tituar telefono
@@ -147,6 +151,47 @@ function ReservaForm() {
     console.log("despues de submit: " + telefo.telefono);
     //se settea e id_titular en reserva
     setReserva((prevReserva) => ({ ...prevReserva, id_titular: titular.id }));
+    if (agencia.nombre !== null) {
+      //Guarda el objeto agencia en un JSON para su envío
+      try {
+        const jsonAgencia = JSON.stringify(agencia);
+        console.log("DATOS DE AGENCIA: ", jsonAgencia);
+        await axios.post(
+          "http://localhost:3001/Route/creaAgencia",
+          jsonAgencia,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        //Traer el endpoint de agencia para traer la ultima agencia y tenerla en id_agencia de titular
+        const response = await axios.get(
+          "http://localhost:3001/Route/AllAgencia"
+        );
+        const agencias = response.data;
+        if (Array.isArray(agencias) && agencias.length > 0) {
+          const lastAgencia = agencias[agencias.length - 1];
+          console.log(lastAgencia);
+          setTitular((prevTitular) => ({
+            ...prevTitular,
+            id_agencia: lastAgencia.id,
+          }));
+          console.log("DATOS DEL TITULAR", titular);
+        } else {
+          console.log("La lista de agencia se encuetra vacía");
+        }
+        //Verificar el codigo de estado de la respuesta
+        if (response.status === 200) {
+          console.log("Se envió correctamente");
+        } else {
+          console.log("Error al enviar la reserva");
+        }
+      } catch (error) {
+        console.error("Error al obtener la lista de agencia", error);
+      }
+    }
     console.log(reserva);
     console.log(titular);
 
@@ -192,25 +237,6 @@ function ReservaForm() {
         console.log("Se envió correctamente");
       } else {
         console.log("Error al enviar la reserva");
-      }
-
-      if (agencia != null) {
-        const jsonAgencia = JSON.stringify(agencia);
-        await axios.post(
-          "http://localhost:3001/Route/creaAgencia",
-          jsonAgencia,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        //Verificar el codigo de estado de la respuesta
-        if (response.status === 200) {
-          console.log("Se envió correctamente");
-        } else {
-          console.log("Error al enviar la reserva");
-        }
       }
 
       response = await axios.post(
@@ -463,18 +489,6 @@ function ReservaForm() {
         </label>
         {pertenece === "true" && (
           <>
-            <label className="block text-gray-700 text-sm font-bold mb-2">
-              ID de la Agencia:
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="id_Agencia"
-                type="number"
-                name="id"
-                placeholder="digita id de agencia"
-                value={agencia.id}
-                onChange={handleAgencia}
-              />
-            </label>
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Nombre de agencia:
               <input
