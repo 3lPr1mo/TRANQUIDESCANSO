@@ -38,13 +38,13 @@ function ReservaForm() {
   });
 
   //Objeto acompañante
-  const [acompanante, setAcompanante] = useState({
+  /*const [acompanante, setAcompanante] = useState({
     id: null,
     nombre: "",
     edad: null,
     id_titular: null,
     mascota: null,
-  });
+  });*/
 
   //Objeto agencia
   const [agencia, setAgencia] = useState({
@@ -71,7 +71,7 @@ function ReservaForm() {
       .catch((error) => {
         console.error("Error al obtener la lista de hoteles", error);
       });
-  });
+  }, []);
 
   //Funciones para controlar los estados
 
