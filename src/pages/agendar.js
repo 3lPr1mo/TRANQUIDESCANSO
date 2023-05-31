@@ -171,12 +171,13 @@ function ReservaForm() {
           "http://localhost:3001/Route/AllAgencia"
         );
         const agencias = response.data;
+        console.log("DATA DE AGENCIA: ", agencia)
         if (Array.isArray(agencias) && agencias.length > 0) {
           const lastAgencia = agencias[agencias.length - 1];
-          console.log(lastAgencia);
+          console.log(lastAgencia, lastAgencia.id);
           setTitular((prevTitular) => ({
             ...prevTitular,
-            id_agencia: lastAgencia.id,
+            id_agencia: parseInt(lastAgencia.id),
           }));
           console.log("DATOS DEL TITULAR", titular);
         } else {
