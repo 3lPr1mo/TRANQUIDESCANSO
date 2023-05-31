@@ -40,13 +40,10 @@ function ReservaForm() {
   });
 
   //Objeto acompañante
-  /*const [acompanante, setAcompanante] = useState({
-    id: null,
-    nombre: "",
-    edad: null,
-    id_titular: null,
-    mascota: null,
-  });*/
+  const [acompanante, setAcompanante] = useState([]);
+
+  // Estado para manejar cuantos form de acompañante mostrar
+  const [acompCountForm, setAcompCountForm] = useState(0);
 
   //Objeto agencia
   const [agencia, setAgencia] = useState({
@@ -87,6 +84,7 @@ function ReservaForm() {
   const handleReservaChange = (e) => {
     const { name, value } = e.target;
     let parsedValue = value;
+    //console.log(value);
     if (
       name === "id" ||
       name === "id_hotel" ||
@@ -97,6 +95,19 @@ function ReservaForm() {
       parsedValue = parseInt(value);
     }
     setReserva((prevReserva) => ({ ...prevReserva, [name]: parsedValue }));
+    if (name === "num_personas") {
+      setAcompCountForm(value);
+      setAcompanante(
+        Array(parseInt(value)).fill({
+          id: null,
+          nombre: "",
+          edad: null,
+          id_titular: null,
+          mascota: null,
+        })
+      );
+      console.log("NUMERO DE ACOMPAÑANTES: ", acompCountForm - 1);
+    }
   };
   //Almacena los datos digitados a setTitular
   const handleTitularChange = (e) => {
@@ -104,11 +115,23 @@ function ReservaForm() {
     const parsedValue = name === "id" ? parseInt(value) : value;
     setTitular((prevTitular) => ({ ...prevTitular, [name]: parsedValue }));
   };
+  //Almacena los datos digitados en acompañante
+  const handleAcomp = (e) => {
+    const { name, value } = e.target;
+    let parsedValue = value;
+    if (name === "id" || name === "edad" || name === "mascota") {
+      parsedValue = parseInt(value);
+    }
+    setAcompanante((prevAcompanante) => ({
+      ...prevAcompanante,
+      [name]: parsedValue,
+    }));
+  };
   //Almacenar el telefono del titular
   const handleTelefonoChange = (e) => {
     const { name, value } = e.target;
     setTelefono((prevTelefono) => ({ ...prevTelefono, [name]: value }));
-    console.log(telefo);
+    //console.log(telefo);
   };
   // condicional de si va a tomar o no servicios
   const handleReservaRadioButton = (e) => {
@@ -143,6 +166,106 @@ function ReservaForm() {
     //console.log("Id de la agencia en titular: " + titular.id_agencia);
   };
 
+  /*const handleAcompCountFormChange = (event) => {
+    setAcompCountForm(parseInt(event.target.value));
+    setAcompanantes([]);
+  };*/
+
+  const handleIdAcomp = (e, index) => {
+    const { name, value } = e.target;
+    const newValue =
+      name === "id" ||
+      name === "edad" ||
+      name === "id_titular" ||
+      name === "mascota"
+        ? parseInt(value, 10)
+        : value;
+    const newAcompanantes = [...acompanante];
+    newAcompanantes[index] = { ...newAcompanantes[index], [name]: newValue };
+    newAcompanantes[index] = {
+      ...newAcompanantes[index],
+      id_titular: parseInt(titular.id),
+    };
+    setAcompanante(newAcompanantes);
+  };
+
+  const generarAcompForm = () => {
+    const contenido = [];
+    if (acompCountForm >= 2) {
+      for (let i = 0; i < acompCountForm - 1; i++) {
+        const datosAcompanante = acompanante[i] || {};
+        contenido.push(
+          <div key={i + 1}>
+            <h3>Acompañante {i + 1}</h3>
+            <label>
+              Id del acompañante:
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id={`idAcomp${i + 1}`}
+                type="number"
+                name="id"
+                placeholder="123123123"
+                value={datosAcompanante.id || null}
+                onChange={(e) => handleIdAcomp(e, i)}
+              />
+            </label>
+            <label>
+              Nombre:
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id={`nombreAcomp${i + 1}`}
+                type="text"
+                name="nombre"
+                placeholder="Acompañante Juan"
+                value={datosAcompanante.nombre || null}
+                onChange={(e) => handleIdAcomp(e, i)}
+              />
+            </label>
+            <label>
+              Edad:
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id={`edadAcomp${i + 1}`}
+                type="number"
+                name="edad"
+                placeholder="5 años"
+                value={datosAcompanante.edad || null}
+                onChange={(e) => handleIdAcomp(e, i)}
+              />
+            </label>
+            <label>
+              Es una mascota:
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id={`mascotaAcomp${i + 1}`}
+                type="number"
+                name="mascota"
+                placeholder="1 -> SI | 0 -> NO"
+                value={datosAcompanante.mascota || null}
+                onChange={(e) => handleIdAcomp(e, i)}
+              />
+            </label>
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="button"
+              onClick={anclarTitular}
+            >
+              Anclar al titular
+            </button>
+          </div>
+        );
+      }
+    }
+    return contenido;
+  };
+
+  /*setAcompanante((prevAcompanante) => ({
+    ...prevAcompanante,
+    id_titular: titular.id,
+  })); //Amacena el id del titular*/
+  //Funcion para anclar el id_titular con el acompañante y mandarlo a la base de datos
+  const anclarTitular = async () => {};
+
   //Funcion para enviar los datos a la base de datos
   const handleSubmit = async (e) => {
     e.preventDefault(); //Evitar que se recargue la pagina
@@ -154,6 +277,8 @@ function ReservaForm() {
     }));
     console.log("despues de submit: " + telefo.id_titular);
     console.log("despues de submit: " + telefo.telefono);
+    //id_titular en acompañante
+
     //se settea e id_titular en reserva
     setReserva((prevReserva) => ({ ...prevReserva, id_titular: titular.id }));
     if (agencia.nombre !== null) {
@@ -176,10 +301,10 @@ function ReservaForm() {
           "http://localhost:3001/Route/AllAgencia"
         );
         const agencias = response.data;
-        console.log("DATA DE AGENCIA: ", agencia);
+        //console.log("DATA DE AGENCIA: ", agencia);
         if (Array.isArray(agencias) && agencias.length > 0) {
           const lastAgencia = agencias[agencias.length - 1];
-          console.log(lastAgencia, lastAgencia.id);
+          console.log(lastAgencia);
           setTitular((prevTitular) => ({
             ...prevTitular,
             id_agencia: parseInt(lastAgencia.id),
@@ -198,11 +323,11 @@ function ReservaForm() {
         console.error("Error al obtener la lista de agencia", error);
       }
     }
-    console.log(reserva);
+    //console.log(reserva);
     console.log(titular);
 
     enviarReserva();
-    router.push("/habitaciones");
+    //router.push("/habitaciones");
   };
 
   const enviarReserva = async () => {
@@ -262,11 +387,23 @@ function ReservaForm() {
         console.log("Error al enviar la reserva");
       }
 
-      //Verificar el codigo de estado de la respuesta
-      if (response.status === 200) {
-        console.log("Se envió correctamente");
-      } else {
-        console.log("Error al enviar la reserva");
+      const indexAcomp = [];
+      acompanante.forEach((acomp) => {
+        indexAcomp.push(acomp);
+      });
+
+      for (let i = 0; i < indexAcomp.length; i++) {
+        let jsonAcomp = JSON.stringify(indexAcomp[i]);
+        console.log(jsonAcomp);
+        await axios.post(
+          "http://localhost:3001/Route/creaAcompanante",
+          jsonAcomp,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
       }
     } catch (error) {
       console.log("Error al enviar la reserva: ", error);
@@ -494,6 +631,7 @@ function ReservaForm() {
             </option>
           </select>
         </label>
+        {generarAcompForm()}
         {pertenece === "true" && (
           <>
             <label className="block text-gray-700 text-sm font-bold mb-2">
@@ -511,14 +649,22 @@ function ReservaForm() {
           </>
         )}
         {/* BOTON PARA GUARDAR RESERVA */}
-        <Link href="/habitaciones" passHref>
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            type="submit"
-          >
-            Guardar Reserva
-          </button>
-        </Link>
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          type="submit"
+        >
+          Guardar Reserva
+        </button>
+        {/*
+          <Link href="/habitaciones" passHref>
+            <button
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="submit"
+            >
+              Guardar Reserva
+            </button>
+          </Link>
+        */}
       </form>
     </div>
   );
