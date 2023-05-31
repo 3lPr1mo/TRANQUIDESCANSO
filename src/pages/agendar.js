@@ -1,7 +1,12 @@
 import axios from "axios";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 function ReservaForm() {
+  //Router para ir a la siguiente página
+  const router = useRouter();
+
   //Declaracion de los estados
 
   //Objeto reserva
@@ -171,7 +176,7 @@ function ReservaForm() {
           "http://localhost:3001/Route/AllAgencia"
         );
         const agencias = response.data;
-        console.log("DATA DE AGENCIA: ", agencia)
+        console.log("DATA DE AGENCIA: ", agencia);
         if (Array.isArray(agencias) && agencias.length > 0) {
           const lastAgencia = agencias[agencias.length - 1];
           console.log(lastAgencia, lastAgencia.id);
@@ -197,6 +202,7 @@ function ReservaForm() {
     console.log(titular);
 
     enviarReserva();
+    router.push("/habitaciones");
   };
 
   const enviarReserva = async () => {
@@ -505,12 +511,14 @@ function ReservaForm() {
           </>
         )}
         {/* BOTON PARA GUARDAR RESERVA */}
-        <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          type="submit"
-        >
-          Guardar Reserva
-        </button>
+        <Link href="/habitaciones" passHref>
+          <button
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            type="submit"
+          >
+            Guardar Reserva
+          </button>
+        </Link>
       </form>
     </div>
   );
