@@ -2,7 +2,7 @@ import { db } from "../database/db.js";
 import {DataTypes} from "sequelize";
 
 const hotel = db.define('hotel',{
-    id:{type: DataTypes.NUMBER, primaryKey: true},
+    id:{type: DataTypes.NUMBER, primaryKey: true, autoIncrement: true},
     nombre:{type: DataTypes.STRING},
     direccion:{type: DataTypes.STRING},
     anio_inaguracion:{type: DataTypes.DATE},
