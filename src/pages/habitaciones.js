@@ -9,7 +9,7 @@ function Habitaciones() {
   });
   const [habitacion, setHabitacion] = useState({
     id: null,
-    id_TipoHabitacion: null,
+    id_tipoHabitacion: null,
     reservada: null,
   });
   const [servicio, setServicio] = useState({
@@ -24,6 +24,7 @@ function Habitaciones() {
   const [comboHabitacion, setComboHabitacion] = useState(null);
   const [serviciosOption, setServiciosOption] = useState("");
   const [comboServicio, setComboServicio] = useState(null);
+  const [nombreTipoHabitacion, setNombreTipoHabitacion] = useState("");
 
   useEffect(() => {
     axios
@@ -55,12 +56,36 @@ function Habitaciones() {
       });
   }, []);
 
-  const handleComboServicios = (e) => {
+  useEffect(() => {
+    console.log(habitacion);
+  }, [habitacion]);
+
+  useEffect(() => {
+    console.log(nombreTipoHabitacion);
+  }, [nombreTipoHabitacion]);
+
+  useEffect(() => {
+    console.log(servicio)
+  }, [servicio])
+
+  const handleComboServicios = async (e) => {
     setComboServicio(e.target.value);
-    setServicio((prevServicio) => ({
-      ...prevServicio,
-      id: parseInt(e.target.value),
-    }));
+    const valor = e.target.value;
+    try {
+      const response = await axios.get(
+        `http://localhost:3001/Route/Servicio/${valor}`
+      );
+      if (response.data.length > 0) {
+        const newServicio = {
+          id: response.data[0].id,
+          nombre: response.data[0].nombre,
+          valor: response.data[0].valor,
+        };
+        setServicio(newServicio)
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleComboBoxTipoHab = (e) => {
@@ -75,15 +100,46 @@ function Habitaciones() {
     setServiciosOption(e.target.value);
   };
 
-  const handleComboHabitacion = (e) => {
+  const handleComboHabitacion = async (e) => {
     setComboHabitacion(e.target.value);
-    setHabitacion((prevHabitacion) => ({
-      ...prevHabitacion,
-      id: e.target.value,
-    }));
+    const valor = e.target.value;
+
+    if (valor !== undefined) {
+      try {
+        const response = await axios.get(
+          `http://localhost:3001/Route/Habitacion/${valor}`
+        );
+        if (response.data.length > 0) {
+          const newHabitacion = {
+            id: response.data[0].id,
+            id_tipohabitacion: response.data[0].id_tipohabitacion,
+            reservada: response.data[0].reservada,
+          };
+          setHabitacion(newHabitacion);
+        }
+        //Trayendo el nombre del tipo de habitacion
+        const responseTipo = await axios.get(
+          `http://localhost:3001/Route/TipHabi/${response.data[0].id_tipohabitacion}`
+        );
+        if (responseTipo.data.length > 0) {
+          setNombreTipoHabitacion(responseTipo.data[0].nombre);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
   };
 
-  const handleSubmit = () => {};
+  //El usuario debe escoger una habitacion, y dependiendo de lo que escoja, se mostrará si que tipo de habitacion es
+  //Eliminar el estado
+
+  const handleSubmit = () => {
+    //Logica para mandar a la base de datos
+    //Según lo escogido en los combo box, obtener los id y mandarlos a la tabla servicios_reserva
+    //id_reserva, id_servicio y el valor pagado (valor por el serivcio)
+    //Tambien enviar id's a la tabla habitacion titular -> id_titular y id_habitacion
+    
+  };
 
   return (
     <div className="max-w-lg mx-auto">
@@ -94,31 +150,6 @@ function Habitaciones() {
         onSubmit={handleSubmit}
         className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
       >
-        <label>
-          Selecciona un tipo de habitacion:
-          <select
-            id="tipoHabitacion"
-            value={comboBoxOption}
-            onChange={handleComboBoxTipoHab}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-          >
-            <option
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              value=""
-            >
-              -- Seleccione --
-            </option>
-            {tipoHabitaciones.map((th) => (
-              <option
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                key={th.id}
-                value={th.id}
-              >
-                {th.nombre}
-              </option>
-            ))}
-          </select>
-        </label>
         <label>
           Selecciona una habitacion:
           <select
@@ -145,6 +176,23 @@ function Habitaciones() {
             })}
           </select>
         </label>
+        <h4>
+          El tipo de habitacion es:
+          <p>{nombreTipoHabitacion}</p>
+          {/*<select
+            id="tipoHabitacion"
+            value={comboBoxOption}
+            onChange={handleComboBoxTipoHab}
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          >
+            <option
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              value=""
+            >
+              -- Seleccione arriba --
+            </option>
+          </select>*/}
+        </h4>
         <div>
           <h4>¿Desea tomar servicios adicionales?</h4>
           <label>
@@ -177,7 +225,6 @@ function Habitaciones() {
                 onChange={handleComboServicios}
               >
                 <option value="">-- Seleccione --</option>
-                {console.log(servicios.length)}
                 {servicios.map((serv) => (
                   <option key={serv.id} value={serv.id}>
                     {serv.nombre}
