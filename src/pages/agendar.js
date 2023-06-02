@@ -6,6 +6,14 @@ import { useEffect, useState } from "react";
 function ReservaForm() {
   //Router para ir a la siguiente página
   const router = useRouter();
+  //Recap de que sirve y que no:
+  //SIRVE:
+  //guardar el titular, guardar el acompañante y guardar la agencia
+  //NO SRIVE
+  //en caso de registrar una agencia, en titular no se guarda el id de la agencia
+  //reserva no guarda el id del titular el resto todo bien
+  //telefono no guarda el id_titular
+  //recomendacion, mandar primero las tablas fuertes si es encesario y luego hacerles get como en la pagina habitacion
 
   //Declaracion de los estados
 
@@ -132,7 +140,7 @@ function ReservaForm() {
     const { name, value } = e.target;
     setTelefono((prevTelefono) => ({ ...prevTelefono, [name]: value }));
     //console.log(telefo);
-  }; 
+  };
   // condicional de si va a tomar o no servicios
   const handleReservaRadioButton = (e) => {
     setServiciosOption(e.target.value);
@@ -186,7 +194,6 @@ function ReservaForm() {
       ...newAcompanantes[index],
       id_titular: parseInt(titular.id),
     };
-    
     setAcompanante(newAcompanantes);
   };
 
@@ -276,6 +283,7 @@ function ReservaForm() {
       ...prevTelefono,
       id_titular: parseInt(titular.id),
     }));
+    console.log("objeto titular en el handleSubmit", titular)
     console.log("despues de submit: " + telefo.id_titular);
     console.log("despues de submit: " + telefo.telefono);
     //id_titular en acompañante
@@ -349,12 +357,6 @@ function ReservaForm() {
           },
         }
       );
-      //Verificar el codigo de estado de la respuesta
-      if (response.status === 200) {
-        console.log("Se envió correctamente");
-      } else {
-        console.log("Error al enviar la reserva");
-      }
 
       response = await axios.post(
         "http://localhost:3001/Route/creaTelTitular",
@@ -365,12 +367,6 @@ function ReservaForm() {
           },
         }
       );
-      //Verificar el codigo de estado de la respuesta
-      if (response.status === 200) {
-        console.log("Se envió correctamente");
-      } else {
-        console.log("Error al enviar la reserva");
-      }
 
       response = await axios.post(
         "http://localhost:3001/Route/creaReserva",
@@ -381,12 +377,6 @@ function ReservaForm() {
           },
         }
       );
-      //Verificar el codigo de estado de la respuesta
-      if (response.status === 200) {
-        console.log("Se envió correctamente");
-      } else {
-        console.log("Error al enviar la reserva");
-      }
 
       const indexAcomp = [];
       acompanante.forEach((acomp) => {
@@ -421,137 +411,6 @@ function ReservaForm() {
         onSubmit={handleSubmit}
         className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
       >
-        <label>
-          ID de la reserva
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="id_reserva"
-            type="number"
-            name="id"
-            placeholder="1234567890"
-            value={reserva.id}
-            onChange={handleReservaChange}
-          />
-        </label>
-        <label>
-          Número de habitaciones
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="n_habitaciones"
-            type="number"
-            name="num_habitaciones"
-            placeholder="# habitaciones"
-            value={reserva.num_habitaciones}
-            onChange={handleReservaChange}
-          />
-        </label>
-        <label>
-          Número de personas
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="n_personas"
-            type="number"
-            name="num_personas"
-            placeholder="# personas"
-            value={reserva.num_personas}
-            onChange={handleReservaChange}
-          />
-        </label>
-        <label>
-          Fecha de incio
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="fechaInic"
-            type="date"
-            name="fecha_inic"
-            value={reserva.fecha_inic}
-            onChange={handleReservaChange}
-          />
-        </label>
-        <label>
-          Fecha final
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="fechaInic"
-            type="date"
-            name="fecha_fin"
-            value={reserva.fecha_fin}
-            onChange={handleReservaChange}
-          />
-        </label>
-        <label>
-          Valor
-          <input
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            id="valor"
-            type="number"
-            name="valor"
-            placeholder="$$$$$$$"
-            value={reserva.valor}
-            onChange={handleReservaChange}
-          />
-        </label>
-        <h4>¿Desea tomar servicios adicionales?</h4>
-        <label>
-          SI
-          <input
-            type="radio"
-            value="SI"
-            checked={serviciosOption === "SI"}
-            onChange={handleReservaRadioButton}
-          />
-        </label>
-        <label>
-          NO
-          <input
-            type="radio"
-            value="NO"
-            checked={serviciosOption === "NO"}
-            onChange={handleReservaRadioButton}
-          />
-        </label>
-        {/* Mostrar lo siguiente si el usuario desea servicios */}
-        {serviciosOption === "SI" && (
-          <div>
-            <label>
-              Servicios a tomar
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="valor_servicios"
-                type="number"
-                name="valor_servicios"
-                value={reserva.valor_servicios}
-                onChange={handleReservaChange}
-              />
-            </label>
-            <label>
-              Valores de Servicios
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="valor_servicios"
-                type="number"
-                name="valor_servicios"
-                value={reserva.valor_servicios}
-                onChange={handleReservaChange}
-              />
-            </label>
-          </div>
-        )}
-        <label>
-          Selecciona un hotel:
-          <select
-            id="hotelesCombo"
-            value={comboHotelOption}
-            onChange={handleChangeHotelBox}
-          >
-            <option value="">-- Seleccione --</option>
-            {hoteles.map((hotel) => (
-              <option key={hotel.id} value={hotel.id}>
-                {hotel.nombre}
-              </option>
-            ))}
-          </select>
-        </label>
         {/* AQUI EMPIEZA EL FORMULARIO DEL TITULAR */}
         <h2 className="flex item-center justify-center text-gray-700 text-sm font-bold mb-2">
           DATOS DEL TITULAR
@@ -649,6 +508,139 @@ function ReservaForm() {
             </label>
           </>
         )}
+        <label>
+          ID de la reserva
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="id_reserva"
+            type="number"
+            name="id"
+            placeholder="1234567890"
+            value={reserva.id}
+            onChange={handleReservaChange}
+          />
+        </label>
+        <label>
+          Número de habitaciones
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="n_habitaciones"
+            type="number"
+            name="num_habitaciones"
+            placeholder="# habitaciones"
+            value={reserva.num_habitaciones}
+            onChange={handleReservaChange}
+          />
+        </label>
+        <label>
+          Número de personas
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="n_personas"
+            type="number"
+            name="num_personas"
+            placeholder="# personas"
+            value={reserva.num_personas}
+            onChange={handleReservaChange}
+          />
+        </label>
+        <label>
+          Fecha de incio
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="fechaInic"
+            type="date"
+            name="fecha_inic"
+            value={reserva.fecha_inic}
+            onChange={handleReservaChange}
+          />
+        </label>
+        <label>
+          Fecha final
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="fechaInic"
+            type="date"
+            name="fecha_fin"
+            value={reserva.fecha_fin}
+            onChange={handleReservaChange}
+          />
+        </label>
+        <label>
+          Valor
+          <input
+            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            id="valor"
+            type="number"
+            name="valor"
+            placeholder="$$$$$$$"
+            value={reserva.valor}
+            onChange={handleReservaChange}
+          />
+        </label>
+        {/*
+        <h4>¿Desea tomar servicios adicionales?</h4>
+        <label>
+          SI
+          <input
+            type="radio"
+            value="SI"
+            checked={serviciosOption === "SI"}
+            onChange={handleReservaRadioButton}
+          />
+        </label>
+        <label>
+          NO
+          <input
+            type="radio"
+            value="NO"
+            checked={serviciosOption === "NO"}
+            onChange={handleReservaRadioButton}
+          />
+        </label>*/}
+        {/* Mostrar lo siguiente si el usuario desea servicios */}
+        {/*serviciosOption === "SI" && (
+          <div>
+            <label>
+              Servicios a tomar
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="valor_servicios"
+                type="number"
+                name="valor_servicios"
+                value={reserva.valor_servicios}
+                onChange={handleReservaChange}
+              />
+            </label>
+            <label>
+              Valores de Servicios
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="valor_servicios"
+                type="number"
+                name="valor_servicios"
+                value={reserva.valor_servicios}
+                onChange={handleReservaChange}
+              />
+            </label>
+          </div>
+        )*/}
+        <label>
+          Selecciona un hotel:
+          <select
+            id="hotelesCombo"
+            value={comboHotelOption}
+            onChange={handleChangeHotelBox}
+          >
+            <option value="">-- Seleccione --</option>
+            {hoteles.map((hotel) => (
+              <option key={hotel.id} value={hotel.id}>
+                {hotel.nombre}
+              </option>
+            ))}
+          </select>
+        </label>
+
         {/* BOTON PARA GUARDAR RESERVA */}
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
