@@ -1,7 +1,10 @@
 import axios from "axios";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 function Habitaciones() {
+  //next router
+  const router = useRouter()
   //Estados de tablas
   const [tipoHabitacion, setTipoHabitacion] = useState({
     id: null,
@@ -241,6 +244,8 @@ function Habitaciones() {
       setPagoIngresado(null);
       window.alert("El valor no equivale al 20%");
     }
+
+    router.push("/reservas")
     //Logica para mandar a la base de datos
     //Según lo escogido en los combo box, obtener los id y mandarlos a la tabla servicios_reserva
     //id_reserva, id_servicio y el valor pagado (valor por el serivcio)
