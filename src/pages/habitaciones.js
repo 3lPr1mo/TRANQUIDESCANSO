@@ -17,6 +17,12 @@ function Habitaciones() {
     nombre: "",
     valor: null,
   });
+  const [pago, setPago] = useState({
+    fecha_pago: null,
+    valor: null,
+  });
+  const [mostrarCampo, setMostrarCampo] = useState(true);
+  const [pagoIngresado, setPagoIngresado] = useState(null);
   const [habitaciones, setHabitaciones] = useState([]);
   const [tipoHabitaciones, setTipoHabitaciones] = useState([]);
   const [servicios, setServicios] = useState([]);
@@ -65,8 +71,18 @@ function Habitaciones() {
   }, [nombreTipoHabitacion]);
 
   useEffect(() => {
-    console.log(servicio)
-  }, [servicio])
+    console.log(servicio);
+  }, [servicio]);
+
+  useEffect(() => {
+    const jsonPago = JSON.stringify(pago);
+    axios.post("http://localhost:3001/Route/creaPago", jsonPago, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(pago);
+  }, [pago]);
 
   const handleComboServicios = async (e) => {
     setComboServicio(e.target.value);
@@ -81,7 +97,7 @@ function Habitaciones() {
           nombre: response.data[0].nombre,
           valor: response.data[0].valor,
         };
-        setServicio(newServicio)
+        setServicio(newServicio);
       }
     } catch (error) {
       console.error(error);
@@ -130,15 +146,75 @@ function Habitaciones() {
     }
   };
 
+  const handlePago = (e) => {
+    setPagoIngresado(e.target.value);
+  };
+
   //El usuario debe escoger una habitacion, y dependiendo de lo que escoja, se mostrará si que tipo de habitacion es
   //Eliminar el estado
 
-  const handleSubmit = () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const getReservas = await axios.get(
+      "http://localhost:3001/Route/AllReserva"
+    );
+    const getLastReservas = getReservas.data[getReservas.data.length - 1];
+    console.log(getLastReservas.id);
+    if (pagoIngresado >= getLastReservas.valor * 0.2) {
+      setMostrarCampo(false);
+      if (serviciosOption === "SI") {
+        const servicioReserva = {
+          id_reserva: getLastReservas.id,
+          id_servicio: servicio.id,
+          total_costo: servicio.valor,
+        };
+        const jsonServRes = JSON.stringify(servicioReserva);
+        console.log("JSON DE SERVICIO RESERVA",jsonServRes)
+        await axios.post(
+          `http://localhost:3001/Route/creaServRes`,
+          jsonServRes,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log(servicioReserva, jsonServRes);
+      }
+      const date = new Date();
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      const formatedDate = `${year}-${month}-${day}`;
+      console.log(formatedDate);
+      setPago({
+        fecha_pago: formatedDate,
+        valor: parseInt(pagoIngresado),
+      });
+
+      const response = await axios.get("http://localhost:3001/Route/AllPago");
+      if (response.data.length > 0) {
+        const lastPago = response.data.pop();
+        console.log(lastPago);
+        const jsonPagoReserva = JSON.stringify({
+          id_reserva: getLastReservas.id,
+          id_pago: lastPago.id,
+        });
+        console.log(jsonPagoReserva)
+        await axios.post("http://localhost:3001/Route/creaPagoRes", jsonPagoReserva, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+      }
+    } else {
+      setPagoIngresado(null);
+      window.alert("El valor no equivale al 20%")
+    }
     //Logica para mandar a la base de datos
     //Según lo escogido en los combo box, obtener los id y mandarlos a la tabla servicios_reserva
     //id_reserva, id_servicio y el valor pagado (valor por el serivcio)
     //Tambien enviar id's a la tabla habitacion titular -> id_titular y id_habitacion
-    
   };
 
   return (
@@ -233,6 +309,19 @@ function Habitaciones() {
               </select>
             </label>
           </div>
+        )}
+        {mostrarCampo && (
+          <label>
+            Valor a pagar (bono)
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="pago_reserva"
+              type="number"
+              placeholder="$$$$$$$"
+              value={pagoIngresado}
+              onChange={handlePago}
+            />
+          </label>
         )}
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
