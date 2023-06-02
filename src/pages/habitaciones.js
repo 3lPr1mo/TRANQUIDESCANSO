@@ -160,7 +160,33 @@ function Habitaciones() {
     );
     const getLastReservas = getReservas.data[getReservas.data.length - 1];
     console.log(getLastReservas.id);
-    if (pagoIngresado >= getLastReservas.valor * 0.2) {
+    if (
+      pagoIngresado >= getLastReservas.valor * 0.2 &&
+      getLastReservas.valor >= pagoIngresado
+    ) {
+      //Cambiar el estado de la habitación a 0 (Actualizar)
+      await axios.put(
+        `http://localhost:3001/Route/upHabitacion/${habitacion.id}`,
+        { reservada: 1 },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      //Traer el id del titular
+      const getTitular = await axios.get("http://localhost:3001/Route/AllTitular")
+      const getLastTitular = getTitular.data[getTitular.data.length - 1]
+      //Almacenar tabla habitacion titular
+      await axios.post(
+        "http://localhost:3001/Route/creaHabiTitul",
+        { id_titular: getLastTitular.id, id_habitacion: habitacion.id },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       setMostrarCampo(false);
       if (serviciosOption === "SI") {
         const servicioReserva = {
@@ -169,7 +195,7 @@ function Habitaciones() {
           total_costo: servicio.valor,
         };
         const jsonServRes = JSON.stringify(servicioReserva);
-        console.log("JSON DE SERVICIO RESERVA",jsonServRes)
+        console.log("JSON DE SERVICIO RESERVA", jsonServRes);
         await axios.post(
           `http://localhost:3001/Route/creaServRes`,
           jsonServRes,
@@ -200,16 +226,20 @@ function Habitaciones() {
           id_reserva: getLastReservas.id,
           id_pago: lastPago.id,
         });
-        console.log(jsonPagoReserva)
-        await axios.post("http://localhost:3001/Route/creaPagoRes", jsonPagoReserva, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        console.log(jsonPagoReserva);
+        await axios.post(
+          "http://localhost:3001/Route/creaPagoRes",
+          jsonPagoReserva,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
       }
     } else {
       setPagoIngresado(null);
-      window.alert("El valor no equivale al 20%")
+      window.alert("El valor no equivale al 20%");
     }
     //Logica para mandar a la base de datos
     //Según lo escogido en los combo box, obtener los id y mandarlos a la tabla servicios_reserva

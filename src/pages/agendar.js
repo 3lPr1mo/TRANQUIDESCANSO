@@ -340,7 +340,7 @@ function ReservaForm() {
     console.log(titular);
 
     enviarReserva(nuevoTelefono);
-    //router.push("/habitaciones");
+    router.push("/habitaciones");
   };
 
   const enviarReserva = async (nuevoTelefono) => {
