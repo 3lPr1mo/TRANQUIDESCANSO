@@ -37,7 +37,7 @@ const ConsultaPage = () => {
         case "Opción 3":
           try {
             const response = await axios.get(
-              "http://localhost:3001/Route/TiempoP/NoUtili"
+              "http://localhost:3001/Route/NoUtili"
             );
             const data = response.data;
             setPeriodoData(data);
