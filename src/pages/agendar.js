@@ -132,7 +132,7 @@ function ReservaForm() {
     const { name, value } = e.target;
     setTelefono((prevTelefono) => ({ ...prevTelefono, [name]: value }));
     //console.log(telefo);
-  };
+  }; 
   // condicional de si va a tomar o no servicios
   const handleReservaRadioButton = (e) => {
     setServiciosOption(e.target.value);
@@ -178,7 +178,7 @@ function ReservaForm() {
       name === "edad" ||
       name === "id_titular" ||
       name === "mascota"
-        ? parseInt(value, 10)
+        ? parseInt(value)
         : value;
     const newAcompanantes = [...acompanante];
     newAcompanantes[index] = { ...newAcompanantes[index], [name]: newValue };
@@ -186,6 +186,7 @@ function ReservaForm() {
       ...newAcompanantes[index],
       id_titular: parseInt(titular.id),
     };
+    
     setAcompanante(newAcompanantes);
   };
 
