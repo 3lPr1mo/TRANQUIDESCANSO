@@ -103,7 +103,7 @@ function ReservaForm() {
       parsedValue = parseInt(value);
     }
     setReserva((prevReserva) => ({ ...prevReserva, [name]: parsedValue }));
-    if (name === "num_personas") {
+    if (name === "num_personas" && 1 < value) {
       setAcompCountForm(value);
       setAcompanante(
         Array(parseInt(value)).fill({
@@ -279,10 +279,11 @@ function ReservaForm() {
     e.preventDefault(); //Evitar que se recargue la pagina
     //Settear las claves foraneas
     //id_tituar telefono
-    setTelefono((prevTelefono) => ({
-      ...prevTelefono,
-      id_titular: parseInt(titular.id),
-    }));
+    console.log(titular.id)
+    const nuevoTelefono = { ...telefo, id_titular: parseInt(titular.id)};
+    //setTelefono(nuevoTelefono)
+    console.log(telefo.id_titular = parseInt(titular.id));
+    
     console.log("objeto titular en el handleSubmit", titular);
     console.log("despues de submit: " + telefo.id_titular);
     console.log("despues de submit: " + telefo.telefono);
@@ -293,6 +294,7 @@ function ReservaForm() {
     if (agencia.nombre !== null) {
       //Guarda el objeto agencia en un JSON para su envío
       try {
+        
         const jsonAgencia = JSON.stringify(agencia);
         console.log("DATOS DE AGENCIA: ", jsonAgencia);
         await axios.post(
@@ -335,18 +337,21 @@ function ReservaForm() {
     //console.log(reserva);
     console.log(titular);
 
-    enviarReserva();
+    enviarReserva(nuevoTelefono);
     //router.push("/habitaciones");
   };
 
-  const enviarReserva = async () => {
+  const enviarReserva = async (nuevoTelefono) => {
     try {
       const jsonReserva = JSON.stringify(reserva);
       console.log(jsonReserva);
       const jsonTitular = JSON.stringify(titular);
       console.log(jsonTitular);
-      const jsonTelefono = JSON.stringify(telefo);
-      console.log(jsonTelefono);
+      /*const jsonTelefono = JSON.stringify(telefo);
+      console.log(jsonTelefono);*/
+      console.log(telefo);
+      const jsonTelefono = JSON.stringify(nuevoTelefono)
+
 
       let response = await axios.post(
         "http://localhost:3001/Route/creaTitular",
@@ -383,20 +388,23 @@ function ReservaForm() {
         acompanante.forEach((acomp) => {
           indexAcomp.push(acomp);
         });
-
-        for (let i = 0; i < indexAcomp.length; i++) {
-          let jsonAcomp = JSON.stringify(indexAcomp[i]);
-          console.log(jsonAcomp);
-          await axios.post(
-            "http://localhost:3001/Route/creaAcompanante",
-            jsonAcomp,
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
+        if(0 < indexAcomp.length){
+          for (let i = 0; i < indexAcomp.length; i++) {
+            console.log(indexAcomp[i]);
+            let jsonAcomp = JSON.stringify(indexAcomp[i]);
+            console.log(jsonAcomp);
+            await axios.post(
+              "http://localhost:3001/Route/creaAcompanante",
+              jsonAcomp,
+              {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+          }
         }
+        
       }
     } catch (error) {
       console.log("Error al enviar la reserva: ", error);

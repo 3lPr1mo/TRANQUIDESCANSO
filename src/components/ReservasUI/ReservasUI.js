@@ -20,12 +20,19 @@ function ReservasUI() {
     return <div>Cargando...</div>;
   }
 
+  const deleteReserva = async (idReserva, index) => {
+    await axios.delete(`http://localhost:3001/Route/elimReserva/${idReserva}`);
+    const updateReservas = [...reservas]
+    updateReservas.splice(index, 1)
+    setReservas(updateReservas)
+  }
+
   return (
     <div className="bg-white">
       {
         reservas !== null ?
         (<div className="grid place-content-center">
-        {reservas.map((reserva) => (
+        {reservas.map((reserva, index) => (
             <div key={reserva.id} className="inline-block border border-gray-200 rounded-xl mb-12">
               <div className="flex item-center justify-between p-4 border-b border-solid">
                 <div className="flex items-center justify-between mx-auto max-w-4xl">
@@ -50,7 +57,7 @@ function ReservasUI() {
                 </div>
               </div>
               <div className="flex item-center justify-center">
-                <button className="px-2 py-2 bg-red-500 hover:bg-red-700 text-white rounded-md ml-5 mr-5">
+                <button className="px-2 py-2 bg-red-500 hover:bg-red-700 text-white rounded-md ml-5 mr-5" onClick={() => deleteReserva(reserva.id, index)}>
                   Eliminar
                 </button>
                 <button className="px-2 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded-md ml-5">
