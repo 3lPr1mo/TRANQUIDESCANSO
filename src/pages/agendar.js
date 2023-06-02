@@ -290,7 +290,8 @@ function ReservaForm() {
     //id_titular en acompañante
 
     //se settea e id_titular en reserva
-    setReserva((prevReserva) => ({ ...prevReserva, id_titular: titular.id }));
+    //setReserva((prevReserva) => ({ ...prevReserva, id_titular: titular.id }));
+    reserva.id_titular = parseInt(titular.id)
     if (agencia.nombre !== null) {
       //Guarda el objeto agencia en un JSON para su envío
       try {
@@ -316,10 +317,11 @@ function ReservaForm() {
         if (Array.isArray(agencias) && agencias.length > 0) {
           const lastAgencia = agencias[agencias.length - 1];
           console.log(lastAgencia);
-          setTitular((prevTitular) => ({
+          /*setTitular((prevTitular) => ({
             ...prevTitular,
             id_agencia: parseInt(lastAgencia.id),
-          }));
+          }));*/
+          titular.id_agencia = parseInt(lastAgencia.id)
           console.log("DATOS DEL TITULAR", titular);
         } else {
           console.log("La lista de agencia se encuetra vacía");
