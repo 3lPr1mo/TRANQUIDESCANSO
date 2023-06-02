@@ -19,6 +19,7 @@ import { createPago, deletePago, getAllPago, getPago, updatePago } from "../cont
 import { createPagoRes, deletePagoRes, getAllPagoRes, getPagoRes, updatePagoRes } from "../controllers/pago_reservaController.js";
 import { createServRes, deleteServRes, getAllServRes, getServRes, updateServRes } from "../controllers/servicio_reservaController.js";
 import { getVistaHotel } from "../controllers/vistasController.js";
+import { getOrMascotas, getPeriodoTiempo, getRegistroTiempo, getReservasCan20, getReservasNo20, getServiciosAdici, gethuespedesTitular } from "../controllers/consultasController.js";
 
 
 const router = express.Router();
@@ -26,6 +27,15 @@ const router = express.Router();
 //----------VISTAS-----------------
 router.get('/VistHotel',getVistaHotel);
 
+
+//----------CONSULTAS PROBLEMA-----------------
+router.get('/TiempoP/:fecha_inic/:fecha_fin',getPeriodoTiempo);
+router.get('/Canceladas',getReservasCan20);
+router.get('/NoUtili',getReservasNo20);
+router.get('/RegistroTime',getRegistroTiempo);
+router.get('/MenorMasco',getOrMascotas);
+router.get('/ServiciosAd',getServiciosAdici);
+router.get('/HuespedesTitu/:id',gethuespedesTitular);
 
 //----------TABLAS-----------------
 //CIUDAD
