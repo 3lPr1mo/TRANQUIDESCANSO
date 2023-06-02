@@ -256,10 +256,6 @@ AFTER INSERT OR UPDATE OF id_Reserva ON pago_reserva
 FOR EACH ROW
 EXECUTE FUNCTION trigger_cambiar_estado_reserva();
 
-
-DROP TRIGGER trigger_activar_cambiar_estado_reserva ON pago_reserva;
-DROP FUNCTION trigger_cambiar_estado_reserva;
-
 ----FUNCION PARA CAMBIAR ESTADO HABITACION
 CREATE FUNCTION cambiarEstadoHabitacion(idReserva INT)
 RETURNS VOID
@@ -350,6 +346,10 @@ BEGIN
     JOIN servicio ON servicio_reserva.id_Servicio = servicio.id
     WHERE servicio_reserva.id_Reserva = reserva_id;
 
+    UPDATE servicio_reserva
+    SET total_costo = total_servicios 
+    WHERE id_Reserva = reserva_id; 
+
     RETURN total_servicios;
 END;
 $$
@@ -360,7 +360,7 @@ CREATE OR REPLACE FUNCTION actualizar_valor_servicios()
     RETURNS TRIGGER AS
 $$
 BEGIN
-    IF TG_OP = 'INSERT' OR TG_OP = 'UPDATE' THEN
+    IF TG_OP = 'INSERT' THEN
         -- Obtener el ID de la reserva
         DECLARE
             reserva_id INT;
@@ -499,21 +499,76 @@ VALUES ('2022-01-02', 200.0),
        ('2022-01-04', 150.0);  
 
 -- Insertar valores en la tabla servicio_reserva 
-INSERT INTO servicio_reserva (id_Reserva, id_Servicio, total_costo) 
-VALUES (1, 1,10), 
-       (1, 2,20), 
-       (2, 3,10), 
-       (3, 1,10), 
-       (3, 2,10), 
-       (3, 3,10);
+INSERT INTO servicio_reserva (id_Reserva, id_Servicio) 
+VALUES (1, 1), 
+       (1, 2), 
+       (2, 3), 
+       (3, 1), 
+       (3, 2), 
+       (3, 3);
 	   
 -- Insertar valores en la tabla pago_reserva 
 INSERT INTO pago_reserva (id_Reserva, id_Pago) 
 VALUES (1, 1), 
        (1, 2), 
        (1, 3);
-	   
-Select*from habitacion
-Select*from reserva
-Select*from pago_reserva
-Select*from servicio_reserva
+
+---CONSULTAS SOLICITADAS EN EL PROBLEMA
+
+---Reservas realizadas en un período de tiempo.
+SELECT r.id, r.fecha_inic, r.fecha_fin
+FROM reserva r
+WHERE r.fecha_inic >= '2022-01-01' AND r.fecha_fin <= '2022-01-06';
+
+---Reservas que fueron canceladas sin pagar el valor del 20% de anticipo.
+SELECT r.id, r.fecha_inic, r.fecha_fin
+FROM reserva r
+LEFT JOIN pago_reserva pr ON r.id = pr.id_Reserva
+WHERE r.estado = 0 OR pr.total_pagado IS NULL;
+
+---Reservas que no fueron utilizadas y pagaron el 20% de anticipo.
+update reserva set id_Llegada = 1 Where id =1;
+
+SELECT DISTINCT ON (r.id) r.id, r.fecha_inic, r.fecha_fin
+FROM reserva r
+JOIN pago_reserva pr ON r.id = pr.id_Reserva
+WHERE r.estado = 1 AND pr.total_pagado >= (r.valor * 0.2) AND r.id_Llegada IS NULL;
+
+---Reservas que tuvieron registro de llegada de los huéspedes a tiempo.
+--Lo que hace es comparar si la fecha inicio es =  a la fecha de la tabla registro_llegada
+--La hora no es necesaria gracias al constraint que impide que metan horas que el problema no indica
+SELECT DISTINCT ON (r.id) r.id, r.fecha_inic, r.fecha_fin
+FROM reserva r
+JOIN registro_llegada rl ON r.id_Llegada = rl.id
+WHERE r.estado = 1 AND rl.fecha = r.fecha_inic;
+
+---Reservas que registraron huéspedes menores de edad y/o mascotas.
+SELECT r.id, r.fecha_inic, r.fecha_fin
+FROM reserva r
+JOIN acompanante a ON r.id_Titular = a.id_Titular
+WHERE a.edad < 18 OR a.mascota = 1;
+
+---Reservas que pagaron servicios adicionales.
+INSERT INTO pago (fecha_pago, valor) 
+VALUES ('2022-01-02', 300.0); 
+
+INSERT INTO pago_reserva (id_Reserva, id_Pago) 
+VALUES (2,4);
+
+INSERT INTO pago_reserva (id_Reserva, id_Pago) 
+VALUES (2, 1), 
+       (2, 2), 
+       (2, 3);
+
+SELECT DISTINCT ON (r.id) r.id, r.fecha_inic, r.fecha_fin
+FROM reserva r
+JOIN servicio_reserva sr ON r.id = sr.id_Reserva
+JOIN pago_reserva pr ON r.id = pr.id_Reserva
+WHERE sr.total_costo IS NOT NULL AND pr.total_pagado >= (r.valor + r.valor_servicios);
+
+---Datos de los huéspedes correspondientes a una reserva particular
+SELECT t.id, t.nombre, t.direccion, a.id, a.nombre, a.edad, a.mascota
+FROM reserva r
+JOIN titular t ON r.id_Titular = t.id
+JOIN acompanante a ON t.id = a.id_Titular
+WHERE r.id = 1;
