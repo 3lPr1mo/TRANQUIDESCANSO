@@ -283,7 +283,7 @@ function ReservaForm() {
       ...prevTelefono,
       id_titular: parseInt(titular.id),
     }));
-    console.log("objeto titular en el handleSubmit", titular)
+    console.log("objeto titular en el handleSubmit", titular);
     console.log("despues de submit: " + telefo.id_titular);
     console.log("despues de submit: " + telefo.telefono);
     //id_titular en acompañante
@@ -378,23 +378,25 @@ function ReservaForm() {
         }
       );
 
-      const indexAcomp = [];
-      acompanante.forEach((acomp) => {
-        indexAcomp.push(acomp);
-      });
+      if (acompanante) {
+        const indexAcomp = [];
+        acompanante.forEach((acomp) => {
+          indexAcomp.push(acomp);
+        });
 
-      for (let i = 0; i < indexAcomp.length; i++) {
-        let jsonAcomp = JSON.stringify(indexAcomp[i]);
-        console.log(jsonAcomp);
-        await axios.post(
-          "http://localhost:3001/Route/creaAcompanante",
-          jsonAcomp,
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        for (let i = 0; i < indexAcomp.length; i++) {
+          let jsonAcomp = JSON.stringify(indexAcomp[i]);
+          console.log(jsonAcomp);
+          await axios.post(
+            "http://localhost:3001/Route/creaAcompanante",
+            jsonAcomp,
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+        }
       }
     } catch (error) {
       console.log("Error al enviar la reserva: ", error);
